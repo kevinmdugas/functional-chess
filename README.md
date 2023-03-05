@@ -1,1 +1,1 @@
-# functionalChess
+# functional-chess
