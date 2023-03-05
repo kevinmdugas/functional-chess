@@ -8,7 +8,7 @@ main = do
   mapM_ print menu
   choice <- getLine
   if choice == "1" then play
-  else if choice == "1" then review
+  else if choice == "2" then review
   else do
     putStrLn "Invalid input"
     main
