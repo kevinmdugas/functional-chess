@@ -25,7 +25,9 @@ source-repository head
 
 library
   exposed-modules:
+      Board
       Interface
+      Piece
   other-modules:
       Paths_functionalChess
   hs-source-dirs:
