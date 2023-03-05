@@ -73,14 +73,14 @@ printRow (row, num) = do
 
 printSquare :: Square -> IO ()
 printSquare (Square piece tileColor) = case tileColor of
-  ChessBlack -> setSGR [SetColor Background Vivid Black] >> printPiece piece >> setSGR [Reset]
-  ChessWhite -> setSGR [SetColor Background Vivid White] >> printPiece piece >> setSGR [Reset]
+  ChessBlack -> setSGR [SetColor Background Dull Black] >> printPiece piece >> setSGR [Reset]
+  ChessWhite -> setSGR [SetColor Background Dull White] >> printPiece piece >> setSGR [Reset]
 
 printPiece :: Maybe Piece -> IO ()
 printPiece Nothing = putStr "   "
 printPiece (Just piece) = case color piece of
-  ChessWhite -> setSGR [SetColor Foreground Vivid Blue] >> putStr (printSymbol (ptype piece)) >> setSGR [Reset]
-  ChessBlack -> setSGR [SetColor Foreground Vivid Red]  >> putStr (printSymbol (ptype piece)) >> setSGR [Reset]
+  ChessWhite -> setSGR [SetColor Foreground Dull Blue] >> putStr (printSymbol (ptype piece)) >> setSGR [Reset]
+  ChessBlack -> setSGR [SetColor Foreground Dull Red]  >> putStr (printSymbol (ptype piece)) >> setSGR [Reset]
 
 printSymbol :: PieceType -> String
 printSymbol ptype = case ptype of
