@@ -6,10 +6,10 @@ data Square = Square { piece :: Maybe Piece, tile :: ChessColor } deriving (Show
 type Board = [[Square]]
 
 emptyBoard :: Board
-emptyBoard = [[Square Nothing (if (i + j) `mod` 2 == 0 then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
+emptyBoard = [[Square Nothing (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
 
 updateBoard :: Board -> [[Maybe Piece]] -> Board
-updateBoard board boardState = zipWith (zipWith updateSquare) board boardState
+updateBoard = zipWith (zipWith updateSquare)
 
 updateSquare :: Square -> Maybe Piece -> Square
 updateSquare square maybePiece = square { piece = maybePiece }
@@ -21,10 +21,10 @@ startState = [
     Just (Piece ChessBlack K), Just (Piece ChessBlack B), 
     Just (Piece ChessBlack N), Just (Piece ChessBlack R) ], 
     replicate 8 (Just (Piece ChessBlack P)),
-    replicate 8 (Nothing),
-    replicate 8 (Nothing),
-    replicate 8 (Nothing),
-    replicate 8 (Nothing),
+    replicate 8 Nothing,
+    replicate 8 Nothing,
+    replicate 8 Nothing,
+    replicate 8 Nothing,
     replicate 8 (Just (Piece ChessWhite P)),
     [ Just (Piece ChessWhite R), Just (Piece ChessWhite N), 
       Just (Piece ChessWhite B), Just (Piece ChessWhite Q), 
