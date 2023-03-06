@@ -8,19 +8,19 @@ main :: IO ()
 main = do
   mapM_ print menu
   choice <- getLine
-  if choice == "1" then play emptyBoard startState
+  if choice == "1" then play initBoard
   else if choice == "2" then review
   else if choice == "3" then return ()
   else do
     putStrLn "Invalid input"
     main
 
-play :: Board -> [[Maybe Piece]] -> IO ()
-play cur new = do
-  printBoard $ updateBoard cur new
+play :: Board -> IO ()
+play board = do
+  printBoard board
   response <- getLine
   if endMatch response then main
-  else play cur new
+  else play board
 
 endMatch :: String -> Bool
 endMatch s = s == "quit"

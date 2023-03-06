@@ -15,8 +15,6 @@ menu = [ "+--------------------------+",
          "|                          |",
          "+--------------------------+" ]
 
-type Pos = (Int, Int)
-
 printBoard :: Board -> IO ()
 printBoard board = do
   putStrLn " +------------------------+"
@@ -26,12 +24,12 @@ printBoard board = do
 
 printRow :: ([Square], Int) -> IO ()
 printRow (row, num) = do
-    putStr (show num ++ "|")
-    mapM_ printSquare row
-    putStrLn ("|" ++ show num)
+  putStr (show num ++ "|")
+  mapM_ printSquare row
+  putStrLn ("|" ++ show num)
 
 printSquare :: Square -> IO ()
-printSquare (Square piece tileColor) = case tileColor of
+printSquare (Square piece tileColor pos) = case tileColor of
   ChessBlack -> setSGR [SetColor Background Dull Black] >> printPiece piece >> setSGR [Reset]
   ChessWhite -> setSGR [SetColor Background Dull White] >> printPiece piece >> setSGR [Reset]
 
