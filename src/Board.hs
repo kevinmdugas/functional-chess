@@ -32,21 +32,3 @@ determinePiece i j = case (i, j) of
   (3, 7)                    -> Just (Piece ChessWhite Q)
   (4, 7)                    -> Just (Piece ChessWhite K)
   (_, _)                    -> Nothing
-
--- newtype ST = S { apply :: ( Pos, Maybe Piece ) -> Board -> (Maybe Piece, Board) }
-
--- getPiece :: Board -> Pos -> Maybe Piece
--- getPiece board (x, y) =  piece (board !! x !! y )
-
--- move :: ST
--- move = S $ \((x,y), p) board -> (
---     getPiece board (x,y),
---     updateBoard (x,y) p board
---   )
-
--- updateBoard :: Pos -> Maybe Piece -> Board -> Board
--- updateBoard (x,y) p board = [[
---   Square (i,j) (if (i,j) == (x,y) then p else getPiece board (i,j)) (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
-
--- updateSquare :: Square -> Maybe Piece -> Square
--- updateSquare square maybePiece = square { piece = maybePiece }

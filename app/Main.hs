@@ -25,8 +25,6 @@ play (p, board) = do
   cur <- getLine
   putStrLn "dest: "
   dest <- getLine
-  -- if endMatch response then main
-  -- else do
   play $ apply move (getPositions cur dest) board
 
 getPositions :: String -> String -> (Pos, Pos)
