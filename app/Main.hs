@@ -1,4 +1,6 @@
 module Main (main) where
+
+import qualified Text.Read as Text
   
 import Board
 import Piece
@@ -19,10 +21,16 @@ main = do
 play :: (Maybe Piece, Board) -> IO ()
 play (p, board) = do
   printBoard board
-  response <- getLine
-  if endMatch response then main
-  else
-    play $ apply move ((0,0), Nothing) board
+  putStrLn "curr: "
+  cur <- getLine
+  putStrLn "dest: "
+  dest <- getLine
+  -- if endMatch response then main
+  -- else do
+  play $ apply move (getPositions cur dest) board
+
+getPositions :: String -> String -> (Pos, Pos)
+getPositions cur dest = (Text.read cur :: Pos, Text.read dest :: Pos)
 
 endMatch :: String -> Bool
 endMatch s = s == "quit"
