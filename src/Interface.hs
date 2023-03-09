@@ -11,10 +11,9 @@ menu = [ "+--------------------------+",
          "|                          |",
          "| 1. Play (Human vs Human) |",
          "| 2. Load game for review  |",
+         "| 3. Quit                  |",
          "|                          |",
          "+--------------------------+" ]
-
-type Pos = (Int, Int)
 
 printBoard :: Board -> IO ()
 printBoard board = do
@@ -25,9 +24,9 @@ printBoard board = do
 
 printRow :: ([Square], Int) -> IO ()
 printRow (row, num) = do
-    putStr (show num ++ "|")
-    mapM_ printSquare row
-    putStrLn ("|" ++ show num)
+  putStr (show num ++ "|")
+  mapM_ printSquare row
+  putStrLn ("|" ++ show num)
 
 printSquare :: Square -> IO ()
 printSquare (Square piece tileColor) = case tileColor of

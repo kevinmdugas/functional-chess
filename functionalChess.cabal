@@ -29,6 +29,7 @@ library
       Interface
       LANParser
       Piece
+      State
   other-modules:
       Paths_functionalChess
   hs-source-dirs:
