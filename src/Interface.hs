@@ -18,8 +18,6 @@ menu = [ "+--------------------------+",
 printBoard :: Board -> IO ()
 printBoard board = do
   putStrLn " +------------------------+"
-  -- let board' = rotateBoard board
-  -- mapM_ printRow (zip (reverse board') [8,7..1])
   mapM_ printRow (zip (reverse board) [8,7..1])
   putStrLn " +------------------------+"
   putStrLn "   A  B  C  D  E  F  G  H  "
@@ -49,9 +47,3 @@ printSymbol ptype = case ptype of
   R -> " R "
   Q -> " Q "
   K -> " K "
-
--- rotateBoard :: Board -> Board
--- rotateBoard board = [[
---   Square (getPiece board (j,i)) (getTile board (i,j))
---     | i <- [0..length (head board) - 1]]
---     | j <- [0..length board - 1]]

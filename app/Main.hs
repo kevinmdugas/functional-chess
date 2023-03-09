@@ -27,12 +27,6 @@ play (p, state) = do
   end <- getLine
   play $ apply move (getPositions start end) state
 
--- play :: IO ()
--- play = do
---   printBoard $ updateBoard emptyBoard startState
---   attemptedMove <- getLine
---   putStrLn attemptedMove
-
 getPositions :: String -> String -> (Pos, Pos)
 getPositions cur dest = (Text.read cur :: Pos, Text.read dest :: Pos)
 
