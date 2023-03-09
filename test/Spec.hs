@@ -1,6 +1,7 @@
 module Spec where
 
 import State
+import Piece
 import TestData
 
 import Test.HUnit
@@ -15,6 +16,16 @@ main = do
 testMove :: Test
 testMove = "testMove" ~:
   TestList [
+    -- Invalid
     apply move ((0,0), (0,0)) initTestBoard ~?= (Nothing, initTestBoard),
-    apply move ((8,0), (0,0)) initTestBoard ~?= (Nothing, initTestBoard) 
+    apply move ((8,0), (0,0)) initTestBoard ~?= (Nothing, initTestBoard),
+    apply move ((0,8), (0,0)) initTestBoard ~?= (Nothing, initTestBoard), 
+    apply move ((0,0), (-1,0)) initTestBoard ~?= (Nothing, initTestBoard), 
+    apply move ((0,0), (0,-1)) initTestBoard ~?= (Nothing, initTestBoard), 
+
+    -- Valid
+    apply move ((1,0), (4,1)) initTestBoard ~?= (
+                                                  Just (Piece ChessWhite P),
+                                                  testMoveBoard1
+                                                ) 
   ]

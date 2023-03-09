@@ -10,34 +10,31 @@ import Piece
 --}
 newtype ST = S { apply :: (Pos, Pos) -> Board -> (Maybe Piece, Board) }
 
--- Return piece on the square denoted by the Pos arg
-getPiece :: Board -> Pos -> Maybe Piece
-getPiece board (x, y) =  piece (board !! y !! x )
-
 -- Perform valid move, returning the updated board state and either
 -- a captured piece or nothing
 move :: ST
-move = S $ \((a,b), (c,d)) board -> ( 
-    case ((a,b), (c,d)) of
-      ((i,j), (h,k)) | (i,j) == (h,k) -> (Nothing, board) 
-      ((i,j), (h,k)) |
-        (i >= 0 && i <= 7) && (j >= 0 && j <= 7) &&
-        (h >= 0 && h <= 7) && (k >= 0 && k <= 7) -> 
-          (
-            getPiece board (c,d),
-            updateBoard ((a,b), (c,d)) board
-          )
-      ((_, _), (_, _)) -> (Nothing, board)
-  )
+move = S $ \(start, end) board -> (
+  case (start, end) of
+    (start, end) | start == end -> (Nothing, board) 
+
+    ((i,j), (h,k)) | inRange i && inRange j && inRange h && inRange k ->
+      (getPiece board end, updateBoard (start, end) board)
+
+    (_, _) -> (Nothing, board)
+  ) where
+    inRange :: Int -> Bool
+    inRange x = x >= 0 && x <= 7
 
 -- Update the board state by instantiating a duplicate of every square
 -- except the squares the player is moving from and to.
 updateBoard :: (Pos, Pos) -> Board -> Board
-updateBoard (cur, dest) board = [[
-  Square
+updateBoard (cur, dest) board = 
+  [[ Square
     (
       if (i,j) == cur then Nothing
       else if (i,j) == dest then getPiece board cur
       else getPiece board (i,j)
     )
-    (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
+    (if even (i + j) then ChessWhite else ChessBlack) 
+    | i <- [0..length (head board) - 1]]
+    | j <- [0..length board - 1]]
