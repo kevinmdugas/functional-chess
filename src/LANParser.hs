@@ -1,4 +1,4 @@
-module LANParser where
+module LANParser(parseMove) where
 
 import Piece
 import Data.Char (ord)
@@ -6,29 +6,35 @@ import Data.Char (ord)
 type Pos = (Int, Int)
 type ChessMove = (Maybe Piece, Pos, Pos)
 
-parseMove :: String -> ChessColor -> Maybe ChessMove
+parseMove :: String -> ChessColor -> (Maybe ChessMove, Maybe ChessMove)
 parseMove lanStr clr =
-  case lanStr of
-    -- "O-O"   -> castle clr
-    -- "O-O-O" -> castle clr
-    -- "0-0"   -> castle clr
-    -- "0-0-0" -> castle clr
+  case stripCheck lanStr of
+    "O-O"   -> castleKS clr
+    "0-0"   -> castleKS clr
+    "O-O-O" -> castleQS clr
+    "0-0-0" -> castleQS clr
     [file1, rank1, _, file2, rank2] | validSquare file1 rank1 && 
                                       validSquare file2 rank2 -> do
       let startPos  = (parseFile file1, parseRank rank1)
-      let endPos    = (parseFile file2, parseRank rank2)
-      let pieceType = P
-      return (Just Piece { color = clr, ptype = pieceType }, startPos, endPos)
+          endPos    = (parseFile file2, parseRank rank2)
+          pieceType = P
+      (return (Just Piece { color = clr, ptype = pieceType }, startPos, endPos), Nothing)
     [piece, file1, rank1, _, file2, rank2] | validPiece piece && 
                                              validSquare file1 rank1 && 
                                              validSquare file2 rank2 -> do
       let startPos  = (parseFile file1, parseRank rank1)
-      let endPos    = (parseFile file2, parseRank rank2)
-      let pieceTypeM = parsePiece piece
+          endPos    = (parseFile file2, parseRank rank2)
+          pieceTypeM = parsePiece piece
       case pieceTypeM of
-        Just pieceType -> return (Just Piece { color = clr, ptype = pieceType }, startPos, endPos)
-        Nothing        -> Nothing
-    _ -> Nothing
+        Just pieceType -> (return (Just Piece { color = clr, ptype = pieceType }, startPos, endPos), Nothing)
+        Nothing        -> (Nothing, Nothing)
+    _ -> (Nothing, Nothing)
+
+stripCheck :: String -> String
+stripCheck [] = []
+stripCheck (x:xs)
+  | x == '+' || x == '#' = []
+  | otherwise = x : stripCheck xs
 
 validSquare :: Char -> Char -> Bool
 validSquare file rank = file `elem` "abcdefgh" && rank `elem` "12345678"
@@ -40,7 +46,7 @@ parseFile :: Char -> Int
 parseFile file = ord file - ord 'a'
 
 parseRank :: Char -> Int
-parseRank rank = ord rank - ord '1'
+parseRank rank = 7 - (ord rank - ord '1')
 
 parsePiece :: Char -> Maybe PieceType
 parsePiece c = case c of
@@ -51,3 +57,23 @@ parsePiece c = case c of
   'N' -> Just N
   'P' -> Just P
   _   -> Nothing
+
+castleKS :: ChessColor -> (Maybe ChessMove, Maybe ChessMove)
+castleKS clr =
+  let kingStartPos = if clr == ChessBlack then (4, 0) else (4, 7)
+      kingEndPos   = if clr == ChessBlack then (6, 0) else (6, 7)
+      rookStartPos = if clr == ChessBlack then (7, 0) else (7, 7)
+      rookEndPos   = if clr == ChessBlack then (5, 0) else (5, 7)
+      kingMove     = (Just Piece { color = clr, ptype = K }, kingStartPos, kingEndPos)
+      rookMove     = (Just Piece { color = clr, ptype = R }, rookStartPos, rookEndPos)
+  in (Just kingMove, Just rookMove)
+
+castleQS :: ChessColor -> (Maybe ChessMove, Maybe ChessMove)
+castleQS clr =
+  let kingStartPos = if clr == ChessBlack then (4, 0) else (4, 7)
+      kingEndPos   = if clr == ChessBlack then (2, 0) else (2, 7)
+      rookStartPos = if clr == ChessBlack then (0, 0) else (0, 7)
+      rookEndPos   = if clr == ChessBlack then (3, 0) else (3, 7)
+      kingMove     = (Just Piece { color = clr, ptype = K }, kingStartPos, kingEndPos)
+      rookMove     = (Just Piece { color = clr, ptype = R }, rookStartPos, rookEndPos)
+  in (Just kingMove, Just rookMove)
