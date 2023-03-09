@@ -58,7 +58,6 @@ test-suite functionalChess-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      TestData
       Paths_functionalChess
   hs-source-dirs:
       test
