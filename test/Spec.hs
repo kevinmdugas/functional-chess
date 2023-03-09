@@ -17,15 +17,13 @@ testMove :: Test
 testMove = "testMove" ~:
   TestList [
     -- Invalid
-    apply move ((0,0), (0,0)) initTestBoard ~?= (Nothing, initTestBoard),
-    apply move ((8,0), (0,0)) initTestBoard ~?= (Nothing, initTestBoard),
-    apply move ((0,8), (0,0)) initTestBoard ~?= (Nothing, initTestBoard), 
-    apply move ((0,0), (-1,0)) initTestBoard ~?= (Nothing, initTestBoard), 
-    apply move ((0,0), (0,-1)) initTestBoard ~?= (Nothing, initTestBoard), 
+    apply move ((0,0), (0,0)) testBoard ~?= (Nothing, testBoard),
+    apply move ((8,0), (0,0)) testBoard ~?= (Nothing, testBoard),
+    apply move ((0,8), (0,0)) testBoard ~?= (Nothing, testBoard), 
+    apply move ((0,0), (-1,0)) testBoard ~?= (Nothing, testBoard), 
+    apply move ((0,0), (0,-1)) testBoard ~?= (Nothing, testBoard), 
 
     -- Valid
-    apply move ((1,0), (4,1)) initTestBoard ~?= (
-                                                  Just (Piece ChessWhite P),
-                                                  testMoveBoard1
-                                                ) 
+    apply move ((0,0), (7,7)) testBoard ~?= (Just (Piece ChessWhite R), validMove1),
+    apply move ((7,3), (0,4)) testBoard ~?= (Just (Piece ChessBlack K), validMove2) 
   ]

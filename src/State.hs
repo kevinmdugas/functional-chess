@@ -35,6 +35,4 @@ updateBoard (cur, dest) board =
       else if (i,j) == dest then getPiece board cur
       else getPiece board (i,j)
     )
-    (if even (i + j) then ChessWhite else ChessBlack) 
-    | i <- [0..length (head board) - 1]]
-    | j <- [0..length board - 1]]
+    (getTile board (i,j)) | i <- [0..7]] | j <- [0..7]]
