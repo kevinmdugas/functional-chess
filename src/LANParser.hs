@@ -2,7 +2,6 @@ module LANParser where
 
 import Piece
 import Data.Char (ord)
-import Control.Monad (guard)
 
 type Pos = (Int, Int)
 type ChessMove = (Maybe Piece, Pos, Pos)
@@ -10,17 +9,19 @@ type ChessMove = (Maybe Piece, Pos, Pos)
 parseMove :: String -> ChessColor -> Maybe ChessMove
 parseMove lanStr clr =
   case lanStr of
-    -- "O-O"   -> castle
-    -- "O-O-O" -> castle
-    -- "0-0"   -> castle
-    -- "0-0-0" -> castle
-    [file1, rank1, _, file2, rank2] -> do
+    -- "O-O"   -> castle clr
+    -- "O-O-O" -> castle clr
+    -- "0-0"   -> castle clr
+    -- "0-0-0" -> castle clr
+    [file1, rank1, _, file2, rank2] | validSquare file1 rank1 && 
+                                      validSquare file2 rank2 -> do
       let startPos  = (parseFile file1, parseRank rank1)
       let endPos    = (parseFile file2, parseRank rank2)
       let pieceType = P
       return (Just Piece { color = clr, ptype = pieceType }, startPos, endPos)
-    [piece, file1, rank1, _, file2, rank2] -> do
-      guard (piece `elem` "KQRBNP")
+    [piece, file1, rank1, _, file2, rank2] | validPiece piece && 
+                                             validSquare file1 rank1 && 
+                                             validSquare file2 rank2 -> do
       let startPos  = (parseFile file1, parseRank rank1)
       let endPos    = (parseFile file2, parseRank rank2)
       let pieceTypeM = parsePiece piece
@@ -28,6 +29,12 @@ parseMove lanStr clr =
         Just pieceType -> return (Just Piece { color = clr, ptype = pieceType }, startPos, endPos)
         Nothing        -> Nothing
     _ -> Nothing
+
+validSquare :: Char -> Char -> Bool
+validSquare file rank = file `elem` "abcdefgh" && rank `elem` "12345678"
+
+validPiece :: Char -> Bool
+validPiece p = p `elem` "KQRBNP"
 
 parseFile :: Char -> Int
 parseFile file = ord file - ord 'a'
@@ -44,9 +51,3 @@ parsePiece c = case c of
   'N' -> Just N
   'P' -> Just P
   _   -> Nothing
-
--- parsePosition :: Parser Position
--- parsePosition = do
---   file <- parseFile <$> many1 letter
---   rank <- parseRank <$> many1 digit
---   return (file, rank)
