@@ -17,9 +17,17 @@ getPiece board (x, y) =  piece (board !! x !! y )
 -- Perform valid move, returning the updated board state and either
 -- a captured piece or nothing
 move :: ST
-move = S $ \(cur, dest) board -> (
-    getPiece board dest,
-    updateBoard (cur, dest) board
+move = S $ \((a,b), (c,d)) board -> ( 
+    case ((a,b), (c,d)) of
+      ((i,j), (h,k)) | (i,j) == (h,k) -> (Nothing, board) 
+      ((i,j), (h,k)) |
+        (i >= 0 && i <= 7) && (j >= 0 && j <= 7) &&
+        (h >= 0 && h <= 7) && (k >= 0 && k <= 7) -> 
+          (
+            getPiece board (c,d),
+            updateBoard ((a,b), (c,d)) board
+          )
+      ((_, _), (_, _)) -> (Nothing, board)
   )
 
 -- Update the board state by instantiating a duplicate of every square
