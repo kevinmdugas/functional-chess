@@ -18,20 +18,23 @@ main = do
     putStrLn "Invalid input"
     main
 
-play :: (Maybe Piece, Board) -> IO ()
-play (p, board) = do
-  printBoard board
+play :: (Maybe Piece, GameState) -> IO ()
+play (p, state) = do
+  printBoard $ updateBoard emptyBoard state
   putStrLn "curr: "
-  cur <- getLine
+  start <- getLine
   putStrLn "dest: "
-  dest <- getLine
-  play $ apply move (getPositions cur dest) board
+  end <- getLine
+  play $ apply move (getPositions start end) state
+
+-- play :: IO ()
+-- play = do
+--   printBoard $ updateBoard emptyBoard startState
+--   attemptedMove <- getLine
+--   putStrLn attemptedMove
 
 getPositions :: String -> String -> (Pos, Pos)
 getPositions cur dest = (Text.read cur :: Pos, Text.read dest :: Pos)
-
-endMatch :: String -> Bool
-endMatch s = s == "quit"
 
 review :: IO ()
 review = undefined

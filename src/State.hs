@@ -8,31 +8,30 @@ import Piece
   proven to be valid. It returns the updated board state after the move
   and the captured piece if there is one.
 --}
-newtype ST = S { apply :: (Pos, Pos) -> Board -> (Maybe Piece, Board) }
+newtype ST = S { apply :: (Pos, Pos) -> GameState -> (Maybe Piece, GameState) }
 
--- Perform valid move, returning the updated board state and either
--- a captured piece or nothing
 move :: ST
-move = S $ \(start, end) board -> (
+move = S $ \(start, end) state -> (
   case (start, end) of
-    (start, end) | start == end -> (Nothing, board) 
+    (start, end) | start == end -> (Nothing, state) 
 
     ((i,j), (h,k)) | inRange i && inRange j && inRange h && inRange k ->
-      (getPiece board end, updateBoard (start, end) board)
+      (getPiece state end, updateState (start, end) state)
 
-    (_, _) -> (Nothing, board)
+    (_, _) -> (Nothing, state)
   ) where
     inRange :: Int -> Bool
     inRange x = x >= 0 && x <= 7
 
--- Update the board state by instantiating a duplicate of every square
--- except the squares the player is moving from and to.
-updateBoard :: (Pos, Pos) -> Board -> Board
-updateBoard (cur, dest) board = 
-  [[ Square
-    (
-      if (i,j) == cur then Nothing
-      else if (i,j) == dest then getPiece board cur
-      else getPiece board (i,j)
-    )
-    (getTile board (i,j)) | i <- [0..7]] | j <- [0..7]]
+updateState :: (Pos, Pos) -> GameState -> GameState
+updateState (start, end) state = 
+  [ updateRow (start, end) state row | row <- [0..7] ] 
+
+updateRow :: (Pos, Pos) -> GameState -> Int -> [Maybe Piece]
+updateRow ((a,b), (c,d)) state i =  case i of
+  x | x == a -> updatePiece (splitAt b (getRow state a)) Nothing
+  x | x == c -> updatePiece (splitAt d (getRow state c)) (getPiece state (a,b))
+  _          -> getRow state i
+
+updatePiece :: ([Maybe Piece], [Maybe Piece]) -> Maybe Piece -> [Maybe Piece]
+updatePiece (x,_:ys) piece = x ++ piece : ys

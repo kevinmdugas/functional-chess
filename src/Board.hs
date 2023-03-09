@@ -10,30 +10,40 @@ data Square = Square {
 } deriving (Show, Eq)
 
 type Board = [[Square]]
+type GameState = [[Maybe Piece]]
 
-getPiece :: Board -> Pos -> Maybe Piece
-getPiece board (x, y) =  piece (board !! y !! x )
+emptyBoard :: Board
+emptyBoard = [[Square Nothing 
+  (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
+
+startState :: [[Maybe Piece]]
+startState = [
+  [ Just (Piece ChessBlack R), Just (Piece ChessBlack N), 
+    Just (Piece ChessBlack B), Just (Piece ChessBlack Q), 
+    Just (Piece ChessBlack K), Just (Piece ChessBlack B), 
+    Just (Piece ChessBlack N), Just (Piece ChessBlack R) ], 
+  replicate 8 (Just (Piece ChessBlack P)),
+  replicate 8 Nothing,
+  replicate 8 Nothing,
+  replicate 8 Nothing,
+  replicate 8 Nothing,
+  replicate 8 (Just (Piece ChessWhite P)),
+  [ Just (Piece ChessWhite R), Just (Piece ChessWhite N), 
+    Just (Piece ChessWhite B), Just (Piece ChessWhite Q), 
+    Just (Piece ChessWhite K), Just (Piece ChessWhite B), 
+    Just (Piece ChessWhite N), Just (Piece ChessWhite R) ]]
+
+getPiece :: GameState -> Pos -> Maybe Piece
+getPiece state (x, y) =  state !! x !! y
+
+getRow :: GameState -> Int -> [Maybe Piece]
+getRow state i = state !! i
 
 getTile :: Board -> Pos -> ChessColor
 getTile board (x, y) = tile (board !! y !! x)
 
-startState :: Board
-startState = [[
-  Square (determinePiece i j)
-  (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
+updateBoard :: Board -> GameState -> Board
+updateBoard = zipWith (zipWith updateSquare)
 
-determinePiece :: Int -> Int -> Maybe Piece
-determinePiece i j = case (i, j) of
-  (0, c) | c == 0 || c == 7 -> Just (Piece ChessBlack R)
-  (0, c) | c == 1 || c == 6 -> Just (Piece ChessBlack N)
-  (0, c) | c == 2 || c == 5 -> Just (Piece ChessBlack B)
-  (0, 3)                    -> Just (Piece ChessBlack Q)
-  (0, 4)                    -> Just (Piece ChessBlack K)
-  (1, _)                    -> Just (Piece ChessBlack P)
-  (6, _)                    -> Just (Piece ChessWhite P)
-  (7, c) | c == 0 || c == 7 -> Just (Piece ChessWhite R)
-  (7, c) | c == 1 || c == 6 -> Just (Piece ChessWhite N)
-  (7, c) | c == 2 || c == 5 -> Just (Piece ChessWhite B)
-  (7, 3)                    -> Just (Piece ChessWhite Q)
-  (7, 4)                    -> Just (Piece ChessWhite K)
-  (_, _)                    -> Nothing
+updateSquare :: Square -> Maybe Piece -> Square
+updateSquare square maybePiece = square { piece = maybePiece }
