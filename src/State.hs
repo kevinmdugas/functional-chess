@@ -12,7 +12,7 @@ newtype ST = S { apply :: (Pos, Pos) -> Board -> (Maybe Piece, Board) }
 
 -- Return piece on the square denoted by the Pos arg
 getPiece :: Board -> Pos -> Maybe Piece
-getPiece board (x, y) =  piece (board !! x !! y )
+getPiece board (x, y) =  piece (board !! y !! x )
 
 -- Perform valid move, returning the updated board state and either
 -- a captured piece or nothing
@@ -36,8 +36,8 @@ updateBoard :: (Pos, Pos) -> Board -> Board
 updateBoard (cur, dest) board = [[
   Square
     (
-      if (j,i) == cur then Nothing
-      else if (j,i) == dest then getPiece board cur
-      else getPiece board (j,i)
+      if (i,j) == cur then Nothing
+      else if (i,j) == dest then getPiece board cur
+      else getPiece board (i,j)
     )
-    (if even (j + i) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
+    (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]

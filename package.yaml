@@ -23,7 +23,6 @@ dependencies:
   - base >= 4.7 && < 5
   - array
   - ansi-terminal
-  - HUnit
 
 ghc-options:
   - -Wall
@@ -38,8 +37,6 @@ ghc-options:
 
 library:
   source-dirs: src
-  dependencies:
-  - HUnit
 
 executables:
   functionalChess-exe:
@@ -51,17 +48,14 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - functionalChess
-      - HUnit
 
 tests:
   functionalChess-test:
     main: Spec.hs
     source-dirs: test
     ghc-options:
-      - -main-is Spec
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
       - functionalChess
-      - HUnit
