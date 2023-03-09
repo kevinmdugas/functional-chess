@@ -1,27 +1,19 @@
 module Spec where
 
 import State
+import TestData
+
 import Test.HUnit
 
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
-
--- testParseWeather :: Test
--- > testParseWeather = "testParseWeather" ~:
--- >       TestList [ parseWeather (Map.fromList
--- >                                [("day", "2"), ("maxTemp", "78"), ("minTemp", "62")])
--- >                  ~?= Just example,
--- >                  parseWeather (Map.fromList [("day", "2")]) ~?= Nothing,
--- >                  parseWeather (Map.fromList
--- >                               [("day", "two"), ("maxTemp", "78"), ("minTemp", "62")])
--- >                  ~?= Nothing ]
-
-testState :: Board
-testState = [[]]
-
--- move
+main = do
+  _ <- runTestTT $ TestList [ testMove ]
+  return ()
+-- The testMove data uses a board of dimensions 5 x 2 to be able to statically
+-- define multiple instances of expected board outputs with less repetitive code.
 testMove :: Test
 testMove = "testMove" ~:
   TestList [
-    apply move 
+    apply move ((0,0), (0,0)) initTestBoard ~?= (Nothing, initTestBoard),
+    apply move ((8,0), (0,0)) initTestBoard ~?= (Nothing, initTestBoard) 
   ]

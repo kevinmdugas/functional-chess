@@ -29,7 +29,7 @@ printRow (row, num) = do
   putStrLn ("|" ++ show num)
 
 printSquare :: Square -> IO ()
-printSquare (Square pos piece tileColor) = case tileColor of
+printSquare (Square piece tileColor) = case tileColor of
   ChessBlack -> setSGR [SetColor Background Dull Black] >> printPiece piece >> setSGR [Reset]
   ChessWhite -> setSGR [SetColor Background Dull White] >> printPiece piece >> setSGR [Reset]
 

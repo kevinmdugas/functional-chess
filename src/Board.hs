@@ -5,7 +5,6 @@ import Piece
 type Pos = (Int, Int)
 
 data Square = Square { 
-  pos   :: Pos,
   piece :: Maybe Piece,
   tile  :: ChessColor
 } deriving (Show, Eq)
@@ -14,7 +13,7 @@ type Board = [[Square]]
 
 startState :: Board
 startState = [[
-  Square (i, j) (determinePiece i j)
+  Square (determinePiece i j)
   (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
 
 determinePiece :: Int -> Int -> Maybe Piece

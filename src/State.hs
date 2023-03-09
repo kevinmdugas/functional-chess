@@ -35,7 +35,6 @@ move = S $ \((a,b), (c,d)) board -> (
 updateBoard :: (Pos, Pos) -> Board -> Board
 updateBoard (cur, dest) board = [[
   Square
-    (j,i) 
     (
       if (j,i) == cur then Nothing
       else if (j,i) == dest then getPiece board cur
