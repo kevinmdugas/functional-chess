@@ -29,6 +29,9 @@ updateState (start, end) state =
 
 updateRow :: (Pos, Pos) -> GameState -> Int -> [Maybe Piece]
 updateRow ((a,b), (c,d)) state i =  case i of
+  x | x == a && x == c -> do
+    let row' = updatePiece (splitAt b (getRow state a)) Nothing
+    updatePiece (splitAt d row') (getPiece state (a,b))
   x | x == a -> updatePiece (splitAt b (getRow state a)) Nothing
   x | x == c -> updatePiece (splitAt d (getRow state c)) (getPiece state (a,b))
   _          -> getRow state i

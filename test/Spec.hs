@@ -27,5 +27,7 @@ testMove = "testMove" ~:
     -- -- Valid
     apply move ((0,0), (7,7)) startState ~?= (Just (Piece ChessWhite R), validMove1),
     apply move ((7,3), (0,4)) startState ~?= (Just (Piece ChessBlack K), validMove2), 
-    apply move ((0,4), (7,3)) validMove2 ~?= (Nothing, validMove3) 
+    apply move ((0,4), (7,3)) validMove2 ~?= (Nothing, validMove3),
+    apply move ((0,0), (0,1)) startState ~?= (Just (Piece ChessBlack N), validMove4),
+    apply move ((0,1), (0,0)) startState ~?= (Just (Piece ChessBlack R), validMove5)
   ]

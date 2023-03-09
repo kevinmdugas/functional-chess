@@ -18,7 +18,7 @@ menu = [ "+--------------------------+",
 printBoard :: Board -> IO ()
 printBoard board = do
   putStrLn " +------------------------+"
-  mapM_ printRow (zip (reverse board) [8,7..1])
+  mapM_ printRow (zip board [8,7..1])
   putStrLn " +------------------------+"
   putStrLn "   A  B  C  D  E  F  G  H  "
 

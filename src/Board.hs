@@ -39,9 +39,6 @@ getPiece state (x, y) =  state !! x !! y
 getRow :: GameState -> Int -> [Maybe Piece]
 getRow state i = state !! i
 
-getTile :: Board -> Pos -> ChessColor
-getTile board (x, y) = tile (board !! y !! x)
-
 updateBoard :: Board -> GameState -> Board
 updateBoard = zipWith (zipWith updateSquare)
 
