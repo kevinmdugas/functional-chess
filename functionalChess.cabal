@@ -27,6 +27,7 @@ library
   exposed-modules:
       Board
       Interface
+      LANParser
       State
   other-modules:
       Paths_functionalChess
