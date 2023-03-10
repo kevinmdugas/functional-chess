@@ -1,6 +1,22 @@
-module Board where
+module Board(
+  ChessColor (..),
+  PieceType (..),
+  Piece (..),
+  Pos,
+  Square (..),
+  Board,
+  GameState,
+  emptyBoard,
+  updateBoard
+) where
 
-import Piece
+data ChessColor = ChessBlack | ChessWhite deriving (Eq, Show)
+
+data PieceType = P | N | B | R | Q | K deriving (Show, Read, Eq, Ord)
+
+data Piece = Piece { color :: ChessColor, ptype :: PieceType } deriving Show
+instance Eq Piece where
+  (Piece c1 t1) == (Piece c2 t2) = c1 == c2 && t1 == t2
 
 type Pos = (Int, Int)
 
@@ -11,23 +27,14 @@ data Square = Square {
 
 type Board = [[Square]]
 
-startState :: Board
-startState = [[
-  Square (determinePiece i j)
+type GameState = [[Maybe Piece]]
+
+emptyBoard :: Board
+emptyBoard = [[Square Nothing 
   (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
 
-determinePiece :: Int -> Int -> Maybe Piece
-determinePiece i j = case (i, j) of
-  (c, 0) | c == 0 || c == 7 -> Just (Piece ChessBlack R)
-  (c, 0) | c == 1 || c == 6 -> Just (Piece ChessBlack N)
-  (c, 0) | c == 2 || c == 5 -> Just (Piece ChessBlack B)
-  (3, 0)                    -> Just (Piece ChessBlack Q)
-  (4, 0)                    -> Just (Piece ChessBlack K)
-  (_, 1)                    -> Just (Piece ChessBlack P)
-  (_, 6)                    -> Just (Piece ChessWhite P)
-  (c, 7) | c == 0 || c == 7 -> Just (Piece ChessWhite R)
-  (c, 7) | c == 1 || c == 6 -> Just (Piece ChessWhite N)
-  (c, 7) | c == 2 || c == 5 -> Just (Piece ChessWhite B)
-  (3, 7)                    -> Just (Piece ChessWhite Q)
-  (4, 7)                    -> Just (Piece ChessWhite K)
-  (_, _)                    -> Nothing
+updateBoard :: Board -> GameState -> Board
+updateBoard = zipWith (zipWith updateSquare)
+
+updateSquare :: Square -> Maybe Piece -> Square
+updateSquare square maybePiece = square { piece = maybePiece }

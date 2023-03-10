@@ -1,6 +1,8 @@
-module Interface where
+module Interface (
+  menu,
+  printBoard,
+) where
 
-import Piece
 import Board
 import System.Console.ANSI
 
