@@ -15,15 +15,15 @@ parseMove lanStr clr =
     "0-0-0" -> castleQS clr
     [file1, rank1, _, file2, rank2] | validSquare file1 rank1 && 
                                       validSquare file2 rank2 -> do
-      let startPos  = (parseFile file1, parseRank rank1)
-          endPos    = (parseFile file2, parseRank rank2)
+      let startPos  = (parseRank rank1, parseFile file1)
+          endPos    = (parseRank rank2, parseFile file2)
           pieceType = P
       (return (Just Piece { color = clr, ptype = pieceType }, startPos, endPos), Nothing)
     [piece, file1, rank1, _, file2, rank2] | validPiece piece && 
                                              validSquare file1 rank1 && 
                                              validSquare file2 rank2 -> do
-      let startPos  = (parseFile file1, parseRank rank1)
-          endPos    = (parseFile file2, parseRank rank2)
+      let startPos  = (parseRank rank1, parseFile file1)
+          endPos    = (parseRank rank2, parseFile file2)
           pieceTypeM = parsePiece piece
       case pieceTypeM of
         Just pieceType -> (return (Just Piece { color = clr, ptype = pieceType }, startPos, endPos), Nothing)
@@ -60,20 +60,20 @@ parsePiece c = case c of
 
 castleKS :: ChessColor -> (Maybe ChessMove, Maybe ChessMove)
 castleKS clr =
-  let kingStartPos = if clr == ChessBlack then (4, 0) else (4, 7)
-      kingEndPos   = if clr == ChessBlack then (6, 0) else (6, 7)
-      rookStartPos = if clr == ChessBlack then (7, 0) else (7, 7)
-      rookEndPos   = if clr == ChessBlack then (5, 0) else (5, 7)
+  let kingStartPos = if clr == ChessBlack then (0, 4) else (7, 4)
+      kingEndPos   = if clr == ChessBlack then (0, 6) else (7, 6)
+      rookStartPos = if clr == ChessBlack then (0, 7) else (7, 7)
+      rookEndPos   = if clr == ChessBlack then (0, 5) else (7, 5)
       kingMove     = (Just Piece { color = clr, ptype = K }, kingStartPos, kingEndPos)
       rookMove     = (Just Piece { color = clr, ptype = R }, rookStartPos, rookEndPos)
   in (Just kingMove, Just rookMove)
 
 castleQS :: ChessColor -> (Maybe ChessMove, Maybe ChessMove)
 castleQS clr =
-  let kingStartPos = if clr == ChessBlack then (4, 0) else (4, 7)
-      kingEndPos   = if clr == ChessBlack then (2, 0) else (2, 7)
-      rookStartPos = if clr == ChessBlack then (0, 0) else (0, 7)
-      rookEndPos   = if clr == ChessBlack then (3, 0) else (3, 7)
+  let kingStartPos = if clr == ChessBlack then (0, 4) else (7, 4)
+      kingEndPos   = if clr == ChessBlack then (0, 2) else (7, 2)
+      rookStartPos = if clr == ChessBlack then (0, 0) else (7, 0)
+      rookEndPos   = if clr == ChessBlack then (0, 3) else (7, 3)
       kingMove     = (Just Piece { color = clr, ptype = K }, kingStartPos, kingEndPos)
       rookMove     = (Just Piece { color = clr, ptype = R }, rookStartPos, rookEndPos)
   in (Just kingMove, Just rookMove)
