@@ -1,7 +1,12 @@
-module TestData where
+module TestData (
+  validMove1,
+  validMove2,
+  validMove3,
+  validMove4,
+  validMove5
+) where
 
 import Board
-import Piece
 
 validMove1 :: GameState
 validMove1 = [

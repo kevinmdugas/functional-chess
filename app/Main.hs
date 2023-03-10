@@ -3,7 +3,6 @@ module Main (main) where
 import qualified Text.Read as Text
   
 import Board
-import Piece
 import State
 import Interface
 

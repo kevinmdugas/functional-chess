@@ -27,7 +27,6 @@ library
   exposed-modules:
       Board
       Interface
-      Piece
       State
   other-modules:
       Paths_functionalChess

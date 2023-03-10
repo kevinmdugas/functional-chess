@@ -1,7 +1,6 @@
-module Spec where
+module Spec (main) where
 
 import State
-import Piece
 import Board
 import TestData
 
