@@ -1,43 +1,66 @@
-module State where
+module State (
+  ST (..),
+  startState,
+  move,
+) where
 
 import Board
-import Piece
 
 {--
   State object is only used after the move denoted by (Pos, Pos) has been
   proven to be valid. It returns the updated board state after the move
   and the captured piece if there is one.
 --}
-newtype ST = S { apply :: (Pos, Pos) -> Board -> (Maybe Piece, Board) }
+newtype ST = S { apply :: (Pos, Pos) -> GameState -> (Maybe Piece, GameState) }
 
--- Return piece on the square denoted by the Pos arg
-getPiece :: Board -> Pos -> Maybe Piece
-getPiece board (x, y) =  piece (board !! y !! x )
+startState :: GameState
+startState = [
+  [ Just (Piece ChessBlack R), Just (Piece ChessBlack N), 
+    Just (Piece ChessBlack B), Just (Piece ChessBlack Q), 
+    Just (Piece ChessBlack K), Just (Piece ChessBlack B), 
+    Just (Piece ChessBlack N), Just (Piece ChessBlack R) ], 
+  replicate 8 (Just (Piece ChessBlack P)),
+  replicate 8 Nothing,
+  replicate 8 Nothing,
+  replicate 8 Nothing,
+  replicate 8 Nothing,
+  replicate 8 (Just (Piece ChessWhite P)),
+  [ Just (Piece ChessWhite R), Just (Piece ChessWhite N), 
+    Just (Piece ChessWhite B), Just (Piece ChessWhite Q), 
+    Just (Piece ChessWhite K), Just (Piece ChessWhite B), 
+    Just (Piece ChessWhite N), Just (Piece ChessWhite R) ]]
 
--- Perform valid move, returning the updated board state and either
--- a captured piece or nothing
+getPiece :: GameState -> Pos -> Maybe Piece
+getPiece state (x, y) =  state !! x !! y
+
+getRow :: GameState -> Int -> [Maybe Piece]
+getRow state i = state !! i
+
 move :: ST
-move = S $ \((a,b), (c,d)) board -> ( 
-    case ((a,b), (c,d)) of
-      ((i,j), (h,k)) | (i,j) == (h,k) -> (Nothing, board) 
-      ((i,j), (h,k)) |
-        (i >= 0 && i <= 7) && (j >= 0 && j <= 7) &&
-        (h >= 0 && h <= 7) && (k >= 0 && k <= 7) -> 
-          (
-            getPiece board (c,d),
-            updateBoard ((a,b), (c,d)) board
-          )
-      ((_, _), (_, _)) -> (Nothing, board)
-  )
+move = S $ \(start, end) state -> (
+  case (start, end) of
+    (start, end) | start == end -> (Nothing, state) 
 
--- Update the board state by instantiating a duplicate of every square
--- except the squares the player is moving from and to.
-updateBoard :: (Pos, Pos) -> Board -> Board
-updateBoard (cur, dest) board = [[
-  Square
-    (
-      if (i,j) == cur then Nothing
-      else if (i,j) == dest then getPiece board cur
-      else getPiece board (i,j)
-    )
-    (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
+    ((i,j), (h,k)) | inRange i && inRange j && inRange h && inRange k ->
+      (getPiece state end, updateState (start, end) state)
+
+    (_, _) -> (Nothing, state)
+  ) where
+    inRange :: Int -> Bool
+    inRange x = x >= 0 && x <= 7
+
+updateState :: (Pos, Pos) -> GameState -> GameState
+updateState (start, end) state = 
+  [ updateRow (start, end) state row | row <- [0..7] ] 
+
+updateRow :: (Pos, Pos) -> GameState -> Int -> [Maybe Piece]
+updateRow ((a,b), (c,d)) state i =  case i of
+  x | x == a && x == c -> do
+    let row' = updatePiece (splitAt b (getRow state a)) Nothing
+    updatePiece (splitAt d row') (getPiece state (a,b))
+  x | x == a -> updatePiece (splitAt b (getRow state a)) Nothing
+  x | x == c -> updatePiece (splitAt d (getRow state c)) (getPiece state (a,b))
+  _          -> getRow state i
+
+updatePiece :: ([Maybe Piece], [Maybe Piece]) -> Maybe Piece -> [Maybe Piece]
+updatePiece (x,_:ys) piece = x ++ piece : ys
