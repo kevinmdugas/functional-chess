@@ -17,12 +17,25 @@ menu = [ "+--------------------------+",
          "|                          |",
          "+--------------------------+" ]
 
-printBoard :: Board -> IO ()
-printBoard board = do
+-- display :: Board -> ChessColor -> IO ()
+-- display board player = do
+--   infoBar player
+--   printBoard board player
+--   infoBar !player
+
+-- infoBar :: ChessColor -> IO ()
+-- infoBar player = putStr player
+
+printBoard :: Board -> ChessColor -> IO ()
+printBoard board player = do
   putStrLn " +------------------------+"
-  mapM_ printRow (zip board [8,7..1])
-  putStrLn " +------------------------+"
-  putStrLn "   A  B  C  D  E  F  G  H  "
+  if player == ChessWhite 
+    then mapM_ printRow (zip board [8,7..1])
+         >> putStrLn " +------------------------+"
+         >> putStrLn "   A  B  C  D  E  F  G  H  "
+  else mapM_ printRow (zip ((reverse . map reverse) board) [1,2..8])
+       >> putStrLn " +------------------------+"
+       >> putStrLn "   H  G  F  E  D  C  B  A  "
 
 printRow :: ([Square], Int) -> IO ()
 printRow (row, num) = do
@@ -30,6 +43,7 @@ printRow (row, num) = do
   mapM_ printSquare row
   putStrLn ("|" ++ show num)
 
+-- Highlight the start and end square from the last move in yellow
 printSquare :: Square -> IO ()
 printSquare (Square piece tileColor) = case tileColor of
   ChessBlack -> setSGR [SetColor Background Dull Black] >> printPiece piece >> setSGR [Reset]
