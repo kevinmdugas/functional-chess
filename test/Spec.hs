@@ -96,35 +96,3 @@ testParse = "testParse" ~:
     parseMove "Ka1-a2#" ChessBlack ~?= 
       (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing)
   ]
-
--- testValidate :: Test
--- testValidate = "testValidate" ~:
---   TestList [
---     -- Castling
---       -- Kingside Black
---     validate (
---       Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,6)),
---       Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,7), (0,5))
---     ) castlingBoard ~?= True,
---       -- Kingside White
---     validate (
---       Just (Piece {color = ChessWhite, ptype = K, moved = False}, (7,4), (7,6)),
---       Just (Piece {color = ChessWhite, ptype = R, moved = False}, (7,7), (7,5))
---     ) castlingBord ~?= True,
---       -- Queenside Black
---     validate (
---       Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,2)),
---       Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (0,3))
---     ) castlingBoard ~?= True,
---       -- Queenside White
---     validate (
---       Just (Piece {color = ChessWhite, ptype = K, moved = False}, (7,4), (7,2)),
---       Just (Piece {color = ChessWhite, ptype = R, moved = False}, (7,0), (7,3))
---     ) castlingBoard ~?= True,
---       -- Invalid, space occupied
---     validate (
---       Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,6)),
---       Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,7), (0,5))
---     ) startState ~?= True,
-
---   ]
