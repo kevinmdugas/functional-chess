@@ -1,5 +1,6 @@
 module Board(
   ChessColor (..),
+  oppColor,
   PieceType (..),
   Piece (..),
   Pos,
@@ -10,7 +11,13 @@ module Board(
   updateBoard
 ) where
 
-data ChessColor = ChessBlack | ChessWhite deriving (Eq, Show)
+data ChessColor = ChessBlack | ChessWhite deriving Eq
+instance Show ChessColor where
+  show ChessBlack = "Black"
+  show ChessWhite = "White"
+oppColor :: ChessColor -> ChessColor
+oppColor ChessWhite = ChessBlack
+oppColor ChessBlack = ChessWhite
 
 data PieceType = P | N | B | R | Q | K deriving (Show, Read, Eq, Ord)
 
@@ -22,7 +29,8 @@ type Pos = (Int, Int)
 
 data Square = Square { 
   piece :: Maybe Piece,
-  tile  :: ChessColor
+  tile  :: ChessColor,
+  index :: Pos
 } deriving (Show, Eq)
 
 type Board = [[Square]]
@@ -31,7 +39,7 @@ type GameState = [[Maybe Piece]]
 
 emptyBoard :: Board
 emptyBoard = [[Square Nothing 
-  (if even (i + j) then ChessWhite else ChessBlack) | i <- [0..7]] | j <- [0..7]]
+  (if even (i + j) then ChessWhite else ChessBlack) (j,i) | i <- [0..7]] | j <- [0..7]]
 
 updateBoard :: Board -> GameState -> Board
 updateBoard = zipWith (zipWith updateSquare)
