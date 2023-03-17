@@ -1,6 +1,6 @@
 module Interface (
   menu,
-  printBoard,
+  display,
 ) where
 
 import Board
@@ -17,37 +17,50 @@ menu = [ "+--------------------------+",
          "|                          |",
          "+--------------------------+" ]
 
--- display :: Board -> ChessColor -> IO ()
--- display board player = do
---   infoBar player
---   printBoard board player
---   infoBar !player
+-- Display who's turn it is
 
--- infoBar :: ChessColor -> IO ()
--- infoBar player = putStr player
+display :: Board -> ChessColor -> (Pos, Pos) -> IO ()
+display board player lastMove = do
+  clearScreen
+  putStrLn $ "\t\t" ++ (show player) ++ "'s Turn"
+  infoBar $ oppColor player
+  printBoard board player lastMove
+  infoBar player
 
-printBoard :: Board -> ChessColor -> IO ()
-printBoard board player = do
-  putStrLn " +------------------------+"
-  if player == ChessWhite 
-    then mapM_ printRow (zip board [8,7..1])
-         >> putStrLn " +------------------------+"
-         >> putStrLn "   A  B  C  D  E  F  G  H  "
-  else mapM_ printRow (zip ((reverse . map reverse) board) [1,2..8])
-       >> putStrLn " +------------------------+"
-       >> putStrLn "   H  G  F  E  D  C  B  A  "
+infoBar :: ChessColor -> IO ()
+infoBar player = putStrLn $ "\t   " ++ (show player) ++ "\t    " ++ "~pieces captured~"
 
-printRow :: ([Square], Int) -> IO ()
-printRow (row, num) = do
+printBoard :: Board -> ChessColor -> (Pos, Pos) -> IO ()
+printBoard board player lastMove = do
+  if player == ChessWhite then 
+    putStrLn      "   a  b  c  d  e  f  g  h   "
+      >> putStrLn " +------------------------+ "
+      >> mapM_ (printRow lastMove) (zip board [8,7..1])
+      >> putStrLn " +------------------------+ "
+      >> putStrLn "   a  b  c  d  e  f  g  h   "
+  else 
+    putStrLn      "   a  b  c  d  e  f  g  h   "
+      >> putStrLn " +------------------------+ "
+      >> mapM_ (printRow lastMove) (zip ((reverse . map reverse) board) [8,7..1])
+      >> putStrLn " +------------------------+ "
+      >> putStrLn "   h  g  f  e  d  c  b  a   "
+
+printRow :: (Pos, Pos) -> ([Square], Int) -> IO ()
+printRow lastMove (row, num) = do
   putStr (show num ++ "|")
-  mapM_ printSquare row
+  mapM_ (printSquare lastMove) row
   putStrLn ("|" ++ show num)
 
--- Highlight the start and end square from the last move in yellow
-printSquare :: Square -> IO ()
-printSquare (Square piece tileColor) = case tileColor of
-  ChessBlack -> setSGR [SetColor Background Dull Black] >> printPiece piece >> setSGR [Reset]
-  ChessWhite -> setSGR [SetColor Background Dull White] >> printPiece piece >> setSGR [Reset]
+printSquare :: (Pos, Pos) -> Square -> IO ()
+printSquare (start, end) (Square piece tileColor index) = 
+  if index == start || index == end then
+    setSGR [SetColor Background Dull Yellow] >> printPiece piece >> setSGR [Reset]
+  else
+    case tileColor of
+      ChessBlack -> setSGR [SetColor Background Dull Black] 
+        >> printPiece piece >> setSGR [Reset]
+      ChessWhite -> setSGR [SetColor Background Dull White] 
+        >> printPiece piece >> setSGR [Reset]
 
 printPiece :: Maybe Piece -> IO ()
 printPiece Nothing = putStr "   "
