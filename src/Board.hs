@@ -14,9 +14,13 @@ data ChessColor = ChessBlack | ChessWhite deriving (Eq, Show)
 
 data PieceType = P | N | B | R | Q | K deriving (Show, Read, Eq, Ord)
 
-data Piece = Piece { color :: ChessColor, ptype :: PieceType } deriving Show
+data Piece = Piece {
+  color :: ChessColor,
+  ptype :: PieceType,
+  moved :: Bool
+} deriving Show
 instance Eq Piece where
-  (Piece c1 t1) == (Piece c2 t2) = c1 == c2 && t1 == t2
+  (Piece c1 t1 m1) == (Piece c2 t2 m2) = c1 == c2 && t1 == t2 && m1 == m2
 
 type Pos = (Int, Int)
 
