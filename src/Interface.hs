@@ -17,33 +17,12 @@ menu = [ "+--------------------------+",
          "|                          |",
          "+--------------------------+" ]
 
--- Display who's turn it is
-
-display :: Board -> ChessColor -> (Pos, Pos) -> IO ()
-display board player lastMove = do
-  clearScreen
-  putStrLn $ "\t\t" ++ (show player) ++ "'s Turn"
-  infoBar $ oppColor player
-  printBoard board player lastMove
-  infoBar player
-
-infoBar :: ChessColor -> IO ()
-infoBar player = putStrLn $ "\t   " ++ (show player) ++ "\t    " ++ "~pieces captured~"
-
-printBoard :: Board -> ChessColor -> (Pos, Pos) -> IO ()
-printBoard board player lastMove = do
-  if player == ChessWhite then 
-    putStrLn      "   a  b  c  d  e  f  g  h   "
-      >> putStrLn " +------------------------+ "
-      >> mapM_ (printRow lastMove) (zip board [8,7..1])
-      >> putStrLn " +------------------------+ "
-      >> putStrLn "   a  b  c  d  e  f  g  h   "
-  else 
-    putStrLn      "   a  b  c  d  e  f  g  h   "
-      >> putStrLn " +------------------------+ "
-      >> mapM_ (printRow lastMove) (zip ((reverse . map reverse) board) [8,7..1])
-      >> putStrLn " +------------------------+ "
-      >> putStrLn "   h  g  f  e  d  c  b  a   "
+printBoard :: Board -> IO ()
+printBoard board = do
+  putStrLn " +------------------------+"
+  mapM_ printRow (zip board [8,7..1])
+  putStrLn " +------------------------+"
+  putStrLn "   A  B  C  D  E  F  G  H  "
 
 printRow :: (Pos, Pos) -> ([Square], Int) -> IO ()
 printRow lastMove (row, num) = do
