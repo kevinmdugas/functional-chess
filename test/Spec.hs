@@ -2,9 +2,8 @@ module Spec (main) where
 
 import State
 import Board
-import TestData
-
 import LANParser
+import TestData
 
 import Test.HUnit
 
@@ -25,12 +24,12 @@ testMove = "testMove" ~:
     apply move ((0,0), (-1,0)) startState ~?= (Nothing, startState), 
     apply move ((0,0), (0,-1)) startState ~?= (Nothing, startState), 
 
-    -- -- Valid
-    apply move ((0,0), (7,7)) startState ~?= (Just (Piece ChessWhite R), validMove1),
-    apply move ((7,3), (0,4)) startState ~?= (Just (Piece ChessBlack K), validMove2), 
+    -- Valid
+    apply move ((0,0), (7,7)) startState ~?= (Just (Piece ChessWhite R False), validMove1),
+    apply move ((7,3), (0,4)) startState ~?= (Just (Piece ChessBlack K False), validMove2), 
     apply move ((0,4), (7,3)) validMove2 ~?= (Nothing, validMove3),
-    apply move ((0,0), (0,1)) startState ~?= (Just (Piece ChessBlack N), validMove4),
-    apply move ((0,1), (0,0)) startState ~?= (Just (Piece ChessBlack R), validMove5)
+    apply move ((0,0), (0,1)) startState ~?= (Just (Piece ChessBlack N False), validMove4),
+    apply move ((0,1), (0,0)) startState ~?= (Just (Piece ChessBlack R False), validMove5)
   ]
 
 testParse :: Test
@@ -51,48 +50,48 @@ testParse = "testParse" ~:
     -- Valid
       -- Castling
     parseMove "O-O" ChessWhite ~?= 
-      (Just (Just Piece { color = ChessWhite, ptype = K }, (7, 4), (7, 6)), 
-       Just (Just Piece { color = ChessWhite, ptype = R }, (7, 7), (7, 5))),
+      (Just (Just Piece { color = ChessWhite, ptype = K, moved = False }, (7, 4), (7, 6)), 
+       Just (Just Piece { color = ChessWhite, ptype = R, moved = False }, (7, 7), (7, 5))),
     parseMove "0-0" ChessWhite ~?= 
-      (Just (Just Piece { color = ChessWhite, ptype = K }, (7, 4), (7, 6)), 
-       Just (Just Piece { color = ChessWhite, ptype = R }, (7, 7), (7, 5))),
+      (Just (Just Piece { color = ChessWhite, ptype = K, moved = False }, (7, 4), (7, 6)), 
+       Just (Just Piece { color = ChessWhite, ptype = R, moved = False }, (7, 7), (7, 5))),
     parseMove "O-O-O" ChessWhite ~?= 
-      (Just (Just Piece { color = ChessWhite, ptype = K }, (7, 4), (7, 2)), 
-       Just (Just Piece { color = ChessWhite, ptype = R }, (7, 0), (7, 3))),
+      (Just (Just Piece { color = ChessWhite, ptype = K, moved = False }, (7, 4), (7, 2)), 
+       Just (Just Piece { color = ChessWhite, ptype = R, moved = False }, (7, 0), (7, 3))),
     parseMove "0-0-0" ChessWhite ~?= 
-      (Just (Just Piece { color = ChessWhite, ptype = K }, (7, 4), (7, 2)), 
-       Just (Just Piece { color = ChessWhite, ptype = R }, (7, 0), (7, 3))),
+      (Just (Just Piece { color = ChessWhite, ptype = K, moved = False }, (7, 4), (7, 2)), 
+       Just (Just Piece { color = ChessWhite, ptype = R, moved = False }, (7, 0), (7, 3))),
 
     parseMove "O-O" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = K }, (0, 4), (0, 6)), 
-       Just (Just Piece { color = ChessBlack, ptype = R }, (0, 7), (0, 5))),
+      (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (0, 4), (0, 6)), 
+       Just (Just Piece { color = ChessBlack, ptype = R, moved = False }, (0, 7), (0, 5))),
     parseMove "0-0" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = K }, (0, 4), (0, 6)), 
-       Just (Just Piece { color = ChessBlack, ptype = R }, (0, 7), (0, 5))),
+      (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (0, 4), (0, 6)), 
+       Just (Just Piece { color = ChessBlack, ptype = R, moved = False }, (0, 7), (0, 5))),
     parseMove "O-O-O" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = K }, (0, 4), (0, 2)), 
-       Just (Just Piece { color = ChessBlack, ptype = R }, (0, 0), (0, 3))),
+      (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (0, 4), (0, 2)), 
+       Just (Just Piece { color = ChessBlack, ptype = R, moved = False }, (0, 0), (0, 3))),
     parseMove "0-0-0" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = K }, (0, 4), (0, 2)), 
-       Just (Just Piece { color = ChessBlack, ptype = R }, (0, 0), (0, 3))),
+      (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (0, 4), (0, 2)), 
+       Just (Just Piece { color = ChessBlack, ptype = R, moved = False }, (0, 0), (0, 3))),
 
       -- Other Moves
     parseMove "Ka1-a2" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = K }, (7, 0), (6, 0)), Nothing),
+      (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing),
     parseMove "Kb1-a7" ChessWhite ~?= 
-      (Just (Just Piece { color = ChessWhite, ptype = K }, (7, 1), (1, 0)), Nothing),
+      (Just (Just Piece { color = ChessWhite, ptype = K, moved = False }, (7, 1), (1, 0)), Nothing),
     parseMove "Re6-c6" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = R }, (2, 4), (2, 2)), Nothing),
+      (Just (Just Piece { color = ChessBlack, ptype = R, moved = False }, (2, 4), (2, 2)), Nothing),
     parseMove "Nf4-g2" ChessWhite ~?= 
-      (Just (Just Piece { color = ChessWhite, ptype = N }, (4, 5), (6, 6)), Nothing),
+      (Just (Just Piece { color = ChessWhite, ptype = N, moved = False }, (4, 5), (6, 6)), Nothing),
     parseMove "Bh3-d7" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = B }, (5, 7), (1, 3)), Nothing),
+      (Just (Just Piece { color = ChessBlack, ptype = B, moved = False }, (5, 7), (1, 3)), Nothing),
     parseMove "Qd8-g4" ChessWhite ~?= 
-      (Just (Just Piece { color = ChessWhite, ptype = Q }, (0, 3), (4, 6)), Nothing),
+      (Just (Just Piece { color = ChessWhite, ptype = Q, moved = False }, (0, 3), (4, 6)), Nothing),
     parseMove "Ka1xa2" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = K }, (7, 0), (6, 0)), Nothing),
+      (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing),
     parseMove "Ka1-a2+" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = K }, (7, 0), (6, 0)), Nothing),
+      (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing),
     parseMove "Ka1-a2#" ChessBlack ~?= 
-      (Just (Just Piece { color = ChessBlack, ptype = K }, (7, 0), (6, 0)), Nothing)
+      (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing)
   ]
