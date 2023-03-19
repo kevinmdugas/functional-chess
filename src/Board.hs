@@ -42,7 +42,7 @@ type Board = [[Square]]
 
 type GameState = [[Maybe Piece]]
 
-type ChessMove = (Maybe Piece, Pos, Pos)
+type ChessMove = (Piece, Pos, Pos)
 
 emptyBoard :: Board
 emptyBoard = [[Square Nothing 

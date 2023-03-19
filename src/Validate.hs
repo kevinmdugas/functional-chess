@@ -4,7 +4,7 @@ import Board
 import State
 
 validate :: (Maybe ChessMove, Maybe ChessMove) -> ChessColor -> GameState -> Bool
-validate (Just (Just expected, start, end), Nothing) player state = do
+validate (Just (expected, start, end), Nothing) player state = do
   let actual = getPiece state start
   validStartPos expected actual && ( case ptype expected of
       P -> True
@@ -22,11 +22,9 @@ validateCastle ((k, ks, ke), (r, rs, re)) player state =
   validEndPos player (getPiece state ke) &&
   validEndPos player (getPiece state re)
 
-validFirstMove :: Maybe Piece -> Maybe Piece -> Bool
-validFirstMove Nothing Nothing = True
+validFirstMove :: Piece -> Maybe Piece -> Bool
 validFirstMove _ Nothing = False
-validFirstMove Nothing _ = False
-validFirstMove (Just expected) (Just actual) = 
+validFirstMove expected (Just actual) = 
   expected == actual && not (moved actual)
 
 validEndPos :: ChessColor -> Maybe Piece -> Bool

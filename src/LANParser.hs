@@ -17,7 +17,7 @@ parseMove lanStr clr =
       let startPos  = (parseRank rank1, parseFile file1)
           endPos    = (parseRank rank2, parseFile file2)
           pieceType = P
-      (return (Just Piece { color = clr, ptype = pieceType, moved = False }, startPos, endPos), Nothing)
+      (return (Piece { color = clr, ptype = pieceType, moved = False }, startPos, endPos), Nothing)
     [piece, file1, rank1, capture, file2, rank2]
       | validPiece piece && 
         validSquare file1 rank1 && 
@@ -27,7 +27,7 @@ parseMove lanStr clr =
           endPos    = (parseRank rank2, parseFile file2)
           pieceTypeM = parsePiece piece
       case pieceTypeM of
-        Just pieceType -> (return (Just Piece { color = clr, ptype = pieceType, moved = False }, startPos, endPos), Nothing)
+        Just pieceType -> (return (Piece { color = clr, ptype = pieceType, moved = False }, startPos, endPos), Nothing)
         Nothing        -> (Nothing, Nothing)
     _ -> (Nothing, Nothing)
 
@@ -68,8 +68,8 @@ castleKS clr =
       kingEndPos   = if clr == ChessBlack then (0, 6) else (7, 6)
       rookStartPos = if clr == ChessBlack then (0, 7) else (7, 7)
       rookEndPos   = if clr == ChessBlack then (0, 5) else (7, 5)
-      kingMove     = (Just Piece { color = clr, ptype = K, moved = False }, kingStartPos, kingEndPos)
-      rookMove     = (Just Piece { color = clr, ptype = R, moved = False }, rookStartPos, rookEndPos)
+      kingMove     = (Piece { color = clr, ptype = K, moved = False }, kingStartPos, kingEndPos)
+      rookMove     = (Piece { color = clr, ptype = R, moved = False }, rookStartPos, rookEndPos)
   in (Just kingMove, Just rookMove)
 
 castleQS :: ChessColor -> (Maybe ChessMove, Maybe ChessMove)
@@ -78,6 +78,6 @@ castleQS clr =
       kingEndPos   = if clr == ChessBlack then (0, 2) else (7, 2)
       rookStartPos = if clr == ChessBlack then (0, 0) else (7, 0)
       rookEndPos   = if clr == ChessBlack then (0, 3) else (7, 3)
-      kingMove     = (Just Piece { color = clr, ptype = K, moved = False }, kingStartPos, kingEndPos)
-      rookMove     = (Just Piece { color = clr, ptype = R, moved = False }, rookStartPos, rookEndPos)
+      kingMove     = (Piece { color = clr, ptype = K, moved = False }, kingStartPos, kingEndPos)
+      rookMove     = (Piece { color = clr, ptype = R, moved = False }, rookStartPos, rookEndPos)
   in (Just kingMove, Just rookMove)
