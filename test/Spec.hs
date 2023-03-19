@@ -152,5 +152,31 @@ testValidate = "testValidate" ~:
     validate (
       Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,2)),
       Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,0), (0,3))
-    ) ChessBlack invalidCastle4 ~?= False
+    ) ChessBlack invalidCastle4 ~?= False,
+
+    -- Move pawn: Valid
+      -- Move two spaces on first turn
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = P, moved = False}), (1,1), (3,1)),
+      Nothing
+    ) ChessBlack startState ~?= False,
+      -- Move single space on first turn
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = P, moved = False}), (1,1), (2,1)),
+      Nothing
+    ) ChessBlack startState ~?= False,
+      -- Move single space after first turn
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = P, moved = False}), (2,1), (3,1)),
+      Nothing
+    ) ChessBlack startState ~?= False
+      -- Move diagonally to capture piece
+    
+    -- Move pawn: Invalid
+      -- Empty space
+      -- Wrong piece
+      -- Move anywhere but one space ahead, two ahead, or diagonally
+      -- Move two spaces after first turn
+      -- Move forward one but space is occupied
+      -- Move diagonally but no opponent piece present
   ]
