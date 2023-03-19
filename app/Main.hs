@@ -45,13 +45,13 @@ stepLoop moveList n (state, player, lastMove) = do
   putStrLn "Options: >, <, flip, quit"
   choice <- getLine
   case choice of
-    ">"     -> case makeMove (moveList !! n) state of
+    ">"    -> case makeMove (moveList !! n) state of
                  Nothing -> putStrLn "Invalid Move" >> stepLoop moveList n (state, player, lastMove)
                  Just (_, newState, newMove) -> stepLoop moveList (n + 1) (newState, player, newMove)
     -- "<"     -> undoMove
-    "flip"  -> stepLoop moveList n (state, oppColor player, lastMove)
-    "quit"  -> main
-    _       -> putStrLn "Invalid option" 
+    "flip" -> stepLoop moveList n (state, oppColor player, lastMove)
+    "quit" -> main
+    _      -> putStrLn "Invalid option" 
                >> stepLoop moveList n (state, player, lastMove)
   -- stepLoop moveList
 
