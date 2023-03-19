@@ -29,6 +29,7 @@ library
       Interface
       LANParser
       State
+      Validate
   other-modules:
       Paths_functionalChess
   hs-source-dirs:

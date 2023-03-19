@@ -7,6 +7,7 @@ module Board(
   Square (..),
   Board,
   GameState,
+  ChessMove,
   emptyBoard,
   updateBoard
 ) where
@@ -40,6 +41,8 @@ data Square = Square {
 type Board = [[Square]]
 
 type GameState = [[Maybe Piece]]
+
+type ChessMove = (Maybe Piece, Pos, Pos)
 
 emptyBoard :: Board
 emptyBoard = [[Square Nothing 

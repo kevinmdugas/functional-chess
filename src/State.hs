@@ -1,6 +1,7 @@
 module State (
   ST (..),
   startState,
+  getPiece,
   move,
 ) where
 

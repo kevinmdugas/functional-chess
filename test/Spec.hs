@@ -3,13 +3,14 @@ module Spec (main) where
 import State
 import Board
 import LANParser
+import Validate
 import TestData
 
 import Test.HUnit
 
 main :: IO ()
 main = do
-  _ <- runTestTT $ TestList [ testMove, testParse ]
+  _ <- runTestTT $ TestList [ testMove, testParse, testValidate ]
   return ()
   
 -- The testMove data uses a board of dimensions 5 x 2 to be able to statically
@@ -94,4 +95,62 @@ testParse = "testParse" ~:
       (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing),
     parseMove "Ka1-a2#" ChessBlack ~?= 
       (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing)
+  ]
+
+testValidate :: Test
+testValidate = "testValidate" ~:
+  TestList [
+    -- Castling: valid
+      -- Kingside Black
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,6)),
+      Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,7), (0,5))
+    ) ChessBlack validCastle ~?= True,
+      -- Kingside White
+    validate (
+      Just (Just (Piece {color = ChessWhite, ptype = K, moved = False}), (7,4), (7,6)),
+      Just (Just (Piece {color = ChessWhite, ptype = R, moved = False}), (7,7), (7,5))
+    ) ChessWhite validCastle ~?= True,
+      -- Queenside Black
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,2)),
+      Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,0), (0,3))
+    ) ChessBlack validCastle ~?= True,
+      -- Queenside White
+    validate (
+      Just (Just (Piece {color = ChessWhite, ptype = K, moved = False}), (7,4), (7,2)),
+      Just (Just (Piece {color = ChessWhite, ptype = R, moved = False}), (7,0), (7,3))
+    ) ChessWhite validCastle ~?= True,
+
+    -- Castling: Invalid
+      -- Wrong color
+    validate (
+      Just (Just (Piece {color = ChessWhite, ptype = K, moved = False}), (7,4), (7,2)),
+      Just (Just (Piece {color = ChessWhite, ptype = R, moved = False}), (7,0), (7,3))
+    ) ChessBlack validCastle ~?= False,
+      -- Space occupied
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,6)),
+      Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,7), (0,5))
+    ) ChessBlack startState ~?= False,
+      -- Not first move for king
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,2)),
+      Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,0), (0,3))
+    ) ChessBlack invalidCastle1 ~?= False,
+      -- Not first move for rook
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,2)),
+      Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,0), (0,3))
+    ) ChessBlack invalidCastle2 ~?= False,
+      -- Wrong piece
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,2)),
+      Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,0), (0,3))
+    ) ChessBlack invalidCastle3 ~?= False,
+      -- No rook present
+    validate (
+      Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,2)),
+      Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,0), (0,3))
+    ) ChessBlack invalidCastle4 ~?= False
   ]
