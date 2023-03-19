@@ -4,6 +4,7 @@ module Board(
   PieceType (..),
   Piece (..),
   Pos,
+  ChessMove,
   Square (..),
   Board,
   GameState,
@@ -15,6 +16,7 @@ data ChessColor = ChessBlack | ChessWhite deriving Eq
 instance Show ChessColor where
   show ChessBlack = "Black"
   show ChessWhite = "White"
+  
 oppColor :: ChessColor -> ChessColor
 oppColor ChessWhite = ChessBlack
 oppColor ChessBlack = ChessWhite
@@ -26,6 +28,8 @@ instance Eq Piece where
   (Piece c1 t1) == (Piece c2 t2) = c1 == c2 && t1 == t2
 
 type Pos = (Int, Int)
+
+type ChessMove = (Maybe Piece, Pos, Pos)
 
 data Square = Square { 
   piece :: Maybe Piece,

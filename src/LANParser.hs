@@ -3,8 +3,6 @@ module LANParser(parseMove) where
 import Board
 import Data.Char (ord)
 
-type ChessMove = (Maybe Piece, Pos, Pos)
-
 parseMove :: String -> ChessColor -> (Maybe ChessMove, Maybe ChessMove)
 parseMove lanStr clr =
   case stripCheck lanStr of

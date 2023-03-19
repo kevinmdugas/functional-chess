@@ -1,5 +1,6 @@
 module Interface (
   menu,
+  reviewMenu,
   display,
 ) where
 
@@ -7,17 +8,37 @@ import Board
 import System.Console.ANSI
 
 menu :: [String]
-menu = [ "+--------------------------+",
-         "|     FUNCTIONAL CHESS     |",
-         "|--------------------------|",
-         "|                          |",
-         "| 1. Play (Human vs Human) |",
-         "| 2. Load game for review  |",
-         "| 3. Quit                  |",
-         "|                          |",
-         "+--------------------------+" ]
+menu = 
+  [ "+------------------------------+",
+    "|       FUNCTIONAL CHESS       |",
+    "|------------------------------|",
+    "|                              |",
+    "| 1. Play (Human vs Human)     |",
+    "| 2. Load game for review      |",
+    "| 3. Quit                      |",
+    "|                              |",
+    "+------------------------------+" ]
 
--- Display who's turn it is
+reviewMenu :: [String]
+reviewMenu = 
+  [ "+------------------------------+",
+    "|         Game Review          |",
+    "|------------------------------|",
+    "| Game review allows you to    |",
+    "| step through recorded games. |",
+    "|                              |",
+    "| Enter the path to a recorded |",
+    "| game file to start a review. |",
+    "|                              |",
+    "| Enter the '>' character to   |",
+    "| go forward a move or '<' to  |",
+    "| go back a move.              |",
+    "|                              |",
+    "| Enter \"start\" to go to the   |",
+    "| beginning of the game, or    |",
+    "| \"quit\" to return to the      |",
+    "| main menu                    |",
+    "+------------------------------+" ]
 
 display :: Board -> ChessColor -> (Pos, Pos) -> IO ()
 display board player lastMove = do
