@@ -64,8 +64,8 @@ updateRow ((a,b), (c,d)) state i =  case i of
   _          -> getRow state i
 
 updatePiece :: ([Maybe Piece], [Maybe Piece]) -> Maybe Piece -> [Maybe Piece]
-updatePiece (x,_:ys) piece = x ++ movedPiece piece : ys
+updatePiece (x,_:ys) piece = x ++ setMoved piece : ys
   where
-    movedPiece :: Maybe Piece -> Maybe Piece
-    movedPiece Nothing = Nothing
-    movedPiece (Just p) = Just (p { moved = True })
+    setMoved :: Maybe Piece -> Maybe Piece
+    setMoved Nothing = Nothing
+    setMoved (Just p) = Just (p { moved = True })

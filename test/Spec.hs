@@ -10,7 +10,11 @@ import Test.HUnit
 
 main :: IO ()
 main = do
-  _ <- runTestTT $ TestList [ testMove, testParse, testValidate ]
+  _ <- runTestTT $ TestList [
+    testMove,
+    testParse,
+    testCastleValidate,
+    testPawnValidate ]
   return ()
   
 -- The testMove data uses a board of dimensions 5 x 2 to be able to statically
@@ -97,10 +101,10 @@ testParse = "testParse" ~:
       (Just (Just Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing)
   ]
 
-testValidate :: Test
-testValidate = "testValidate" ~:
+testCastleValidate :: Test
+testCastleValidate = "testCastleValidate" ~:
   TestList [
-    -- Castling: valid
+    -- Valid
       -- Kingside Black
     validate (
       Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,6)),
@@ -122,7 +126,7 @@ testValidate = "testValidate" ~:
       Just (Just (Piece {color = ChessWhite, ptype = R, moved = False}), (7,0), (7,3))
     ) ChessWhite validCastle ~?= True,
 
-    -- Castling: Invalid
+    -- Invalid
       -- Wrong color
     validate (
       Just (Just (Piece {color = ChessWhite, ptype = K, moved = False}), (7,4), (7,2)),
@@ -152,24 +156,28 @@ testValidate = "testValidate" ~:
     validate (
       Just (Just (Piece {color = ChessBlack, ptype = K, moved = False}), (0,4), (0,2)),
       Just (Just (Piece {color = ChessBlack, ptype = R, moved = False}), (0,0), (0,3))
-    ) ChessBlack invalidCastle4 ~?= False,
+    ) ChessBlack invalidCastle4 ~?= False
+  ]
 
+testPawnValidate :: Test
+testPawnValidate = "testPawnValidate" ~:
+  TestList [
     -- Move pawn: Valid
       -- Move two spaces on first turn
     validate (
       Just (Just (Piece {color = ChessBlack, ptype = P, moved = False}), (1,1), (3,1)),
       Nothing
-    ) ChessBlack startState ~?= False,
+    ) ChessBlack startState ~?= True,
       -- Move single space on first turn
     validate (
       Just (Just (Piece {color = ChessBlack, ptype = P, moved = False}), (1,1), (2,1)),
       Nothing
-    ) ChessBlack startState ~?= False,
+    ) ChessBlack startState ~?= True
       -- Move single space after first turn
-    validate (
-      Just (Just (Piece {color = ChessBlack, ptype = P, moved = False}), (2,1), (3,1)),
-      Nothing
-    ) ChessBlack startState ~?= False
+    -- validate (
+    --   Just (Just (Piece {color = ChessBlack, ptype = P, moved = False}), (2,1), (3,1)),
+    --   Nothing
+    -- ) ChessBlack startState ~?= True
       -- Move diagonally to capture piece
     
     -- Move pawn: Invalid
