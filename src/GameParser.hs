@@ -10,6 +10,7 @@ parseGameFile :: FilePath -> IO [(Maybe ChessMove, Maybe ChessMove)]
 parseGameFile filePath = do
   contents <- readFile filePath
   let moveStrings = filterNonMoves $ words contents
+  -- let resultString = getGameResult $ words contents
   return $ processMoves moveStrings turns
 
 processMoves :: [String] -> [ChessColor] -> [(Maybe ChessMove, Maybe ChessMove)]
@@ -25,9 +26,9 @@ turns = cycle [ChessWhite, ChessBlack]
 filterNonMoves :: [String] -> [String]
 filterNonMoves [] = []
 filterNonMoves (x:xs)
-  | x == ""                          = filterNonMoves xs
-  | head x `elem` "KQRBNPabcdefgh0O" = x : filterNonMoves xs
-  | otherwise                        = filterNonMoves xs
+  | x == ""                         = filterNonMoves xs
+  | head x `elem` "KQRBNPabcdefghO" = x : filterNonMoves xs
+  | otherwise                       = filterNonMoves xs
 
 getGameResult :: [String] -> String
 getGameResult [] = "Error: No result given"

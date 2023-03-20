@@ -4,11 +4,11 @@ module Board(
   PieceType (..),
   Piece (..),
   Pos,
-  ChessMove,
   Square (..),
   Board,
   GameState,
   ChessMove,
+  Captures,
   emptyBoard,
   updateBoard
 ) where
@@ -34,8 +34,6 @@ instance Eq Piece where
 
 type Pos = (Int, Int)
 
-type ChessMove = (Maybe Piece, Pos, Pos)
-
 data Square = Square { 
   piece :: Maybe Piece,
   tile  :: ChessColor,
@@ -47,6 +45,8 @@ type Board = [[Square]]
 type GameState = [[Maybe Piece]]
 
 type ChessMove = (Piece, Pos, Pos)
+
+type Captures = ([Maybe Piece], [Maybe Piece])
 
 emptyBoard :: Board
 emptyBoard = [[Square Nothing 
