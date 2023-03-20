@@ -2,6 +2,7 @@ module Interface (
   menu,
   reviewMenu,
   display,
+  printBoard,
 ) where
 
 import Board
@@ -60,9 +61,9 @@ printBoard board player lastMove = do
       >> putStrLn " +------------------------+ "
       >> putStrLn "   a  b  c  d  e  f  g  h   "
   else 
-    putStrLn      "   a  b  c  d  e  f  g  h   "
+    putStrLn      "   h  g  f  e  d  c  b  a   "
       >> putStrLn " +------------------------+ "
-      >> mapM_ (printRow lastMove) (zip ((reverse . map reverse) board) [8,7..1])
+      >> mapM_ (printRow lastMove) (zip ((reverse . map reverse) board) [1,2..8])
       >> putStrLn " +------------------------+ "
       >> putStrLn "   h  g  f  e  d  c  b  a   "
 

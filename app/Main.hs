@@ -41,22 +41,23 @@ review = do
 
 stepLoop :: [(Maybe ChessMove, Maybe ChessMove)] -> Int -> (GameState, ChessColor, (Pos, Pos)) -> IO ()
 stepLoop moveList n (state, player, lastMove) = do
-  display (updateBoard emptyBoard state) player lastMove
+  printBoard (updateBoard emptyBoard state) player lastMove
   putStrLn "Options: >, <, flip, quit"
   choice <- getLine
   case choice of
     ">"    -> case makeMove (moveList !! n) state of
-                 Nothing -> putStrLn "Invalid Move" >> stepLoop moveList n (state, player, lastMove)
-                 Just (_, newState, newMove) -> stepLoop moveList (n + 1) (newState, player, newMove)
-    -- "<"     -> undoMove
+                Nothing -> putStrLn "Invalid Move" >> stepLoop moveList n (state, player, lastMove)
+                Just (_, newState, newMove) -> stepLoop moveList (n + 1) (newState, player, newMove)
+    "<"    -> case makeMove (reverseMove (moveList !! n)) state of 
+                Nothing -> putStrLn "Invalid Move" >> stepLoop moveList n (state, player, lastMove)
+                Just (p, newState, (x, y)) -> stepLoop moveList (n + 1) (placePiece p x newState, player, (x, y))
     "flip" -> stepLoop moveList n (state, oppColor player, lastMove)
     "quit" -> main
     _      -> putStrLn "Invalid option" 
                >> stepLoop moveList n (state, player, lastMove)
-  -- stepLoop moveList
 
 makeMove :: (Maybe ChessMove, Maybe ChessMove) -> GameState -> Maybe (Maybe Piece, GameState, (Pos, Pos))
-makeMove x state = case x of
+makeMove moveSet state = case moveSet of
   (Just (p1, start1, end1), Just (p2, start2, end2)) -> do -- Castling
     let (newP1, newState1) = apply move (start1, end1) state
     let (newP2, newState2) = apply move (start2, end2) newState1
@@ -66,3 +67,13 @@ makeMove x state = case x of
     return (newP, newState, (start, end))
   (Nothing, Nothing) -> do -- Invalid Input
     Nothing
+
+reverseMove :: (Maybe ChessMove, Maybe ChessMove) -> (Maybe ChessMove, Maybe ChessMove)
+reverseMove (Just (p1, start1, end1), Just (p2, start2, end2)) =
+  (Just (p1, end1, start1), Just (p2, end2, start2))
+reverseMove (Just (p, start, end), Nothing) =
+  (Just (p, end, start), Nothing)
+reverseMove (_, _) = (Nothing, Nothing)
+
+placePiece :: Maybe Piece -> Pos -> GameState -> GameState
+placePiece = undefined

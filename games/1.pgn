@@ -1,0 +1,26 @@
+[Event "FICS rated standard game"]
+[Site "FICS freechess.org"]
+[Date "2023.01.31"]
+[Round "?"]
+[White "Demicka"]
+[Black "konozrout"]
+[Result "0-1"]
+[WhiteElo "1863"]
+[BlackElo "2262"]
+[ECO "A85"]
+[TimeControl "900+0"]
+[Time "22:18:00"]
+[PlyCount "33"]
+[FICSGamesDBGameNo "530203162"]
+[WhiteRD "109.6"]
+[BlackRD "39.7"]
+[BlackIsComp "Yes"]
+[WhiteClock "0:15:00.000"]
+[BlackClock "0:15:00.000"]
+
+1. d2-d4 f7-f5 2. c2-c4 Ng8-f6 3. Nb1-c3 g7-g6 4. f2-f3 Bf8-g7 5. e2-e4
+d7-d6 6. Bf1-d3 O-O 7. Ng1-e2 f5xe4 8. f3xe4 Nf6-g4 9. Qd1-c2 Nb8-c6 10.
+d4-d5 Nc6-b4 11. Qc2-b1 Nb4xd3+ 12. Qb1xd3 Ng4-f2 13. Qd3-c2 Nf2xh1 14.
+Bc1-e3 e7-e5 15. O-O-O Nh1-f2 16. Rd1-f1 Nf2-d3+ 17. Qc2xd3 { White resigns
+} 0-1
+

@@ -11,7 +11,6 @@ parseGameFile filePath = do
   contents <- readFile filePath
   let moveStrings = filterNonMoves $ words contents
   return $ processMoves moveStrings turns
-  -- return $ show moves
 
 processMoves :: [String] -> [ChessColor] -> [(Maybe ChessMove, Maybe ChessMove)]
 processMoves moves colors = 
@@ -30,20 +29,9 @@ filterNonMoves (x:xs)
   | head x `elem` "KQRBNPabcdefgh0O" = x : filterNonMoves xs
   | otherwise                        = filterNonMoves xs
 
--- getMoveList :: [String] -> [Maybe ChessMove]
--- getMoveList = filter (/= (Nothing, Nothing)) . map parseMove
-
--- getGameResult
-
--- filterHeaders :: [String] -> [String]
--- filterHeaders [] = []
--- filterHeaders (x:xs)
---   | x == ""       = filterHeaders xs
---   | head x /= '[' = x : filterHeaders xs
---   | otherwise     = filterHeaders xs
-
--- filterTurnNums :: String -> String
--- filterTurnNums
-
--- filterResultDescription :: String -> String
--- filterResultDescription
+getGameResult :: [String] -> String
+getGameResult [] = "Error: No result given"
+getGameResult (x:xs)
+  | x == ""                            = getGameResult xs
+  | x `elem` ["1-0", "1/2-1/2", "0-1"] = x
+  | otherwise                          = getGameResult xs
