@@ -1,6 +1,7 @@
 module State (
   ST (..),
   startState,
+  getPiece,
   move,
 ) where
 
@@ -15,20 +16,20 @@ newtype ST = S { apply :: (Pos, Pos) -> GameState -> (Maybe Piece, GameState) }
 
 startState :: GameState
 startState = [
-  [ Just (Piece ChessBlack R), Just (Piece ChessBlack N), 
-    Just (Piece ChessBlack B), Just (Piece ChessBlack Q), 
-    Just (Piece ChessBlack K), Just (Piece ChessBlack B), 
-    Just (Piece ChessBlack N), Just (Piece ChessBlack R) ], 
-  replicate 8 (Just (Piece ChessBlack P)),
+  [ Just (Piece ChessBlack R False), Just (Piece ChessBlack N False), 
+    Just (Piece ChessBlack B False), Just (Piece ChessBlack Q False), 
+    Just (Piece ChessBlack K False), Just (Piece ChessBlack B False), 
+    Just (Piece ChessBlack N False), Just (Piece ChessBlack R False) ], 
+  replicate 8 (Just (Piece ChessBlack P False)),
   replicate 8 Nothing,
   replicate 8 Nothing,
   replicate 8 Nothing,
   replicate 8 Nothing,
-  replicate 8 (Just (Piece ChessWhite P)),
-  [ Just (Piece ChessWhite R), Just (Piece ChessWhite N), 
-    Just (Piece ChessWhite B), Just (Piece ChessWhite Q), 
-    Just (Piece ChessWhite K), Just (Piece ChessWhite B), 
-    Just (Piece ChessWhite N), Just (Piece ChessWhite R) ]]
+  replicate 8 (Just (Piece ChessWhite P False)),
+  [ Just (Piece ChessWhite R False), Just (Piece ChessWhite N False), 
+    Just (Piece ChessWhite B False), Just (Piece ChessWhite Q False), 
+    Just (Piece ChessWhite K False), Just (Piece ChessWhite B False), 
+    Just (Piece ChessWhite N False), Just (Piece ChessWhite R False) ]]
 
 getPiece :: GameState -> Pos -> Maybe Piece
 getPiece state (x, y) =  state !! x !! y
@@ -50,7 +51,7 @@ move = S $ \(start, end) state -> (
     inRange x = x >= 0 && x <= 7
 
 updateState :: (Pos, Pos) -> GameState -> GameState
-updateState (start, end) state = 
+updateState (start, end) state = do 
   [ updateRow (start, end) state row | row <- [0..7] ] 
 
 updateRow :: (Pos, Pos) -> GameState -> Int -> [Maybe Piece]
@@ -63,4 +64,8 @@ updateRow ((a,b), (c,d)) state i =  case i of
   _          -> getRow state i
 
 updatePiece :: ([Maybe Piece], [Maybe Piece]) -> Maybe Piece -> [Maybe Piece]
-updatePiece (x,_:ys) piece = x ++ piece : ys
+updatePiece (x,_:ys) piece = x ++ setMoved piece : ys
+  where
+    setMoved :: Maybe Piece -> Maybe Piece
+    setMoved Nothing = Nothing
+    setMoved (Just p) = Just (p { moved = True })
