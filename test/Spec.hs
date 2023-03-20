@@ -3,6 +3,7 @@ module Spec (main) where
 import State
 import Board
 import LANParser
+import Validate
 import TestData
 
 import Test.HUnit
@@ -11,7 +12,9 @@ main :: IO ()
 main = do
   _ <- runTestTT $ TestList [
     testMove,
-    testParse ]
+    testParse,
+    testCastleValidate,
+    testPawnValidate ]
   return ()
   
 -- The testMove data uses a board of dimensions 5 x 2 to be able to statically
@@ -96,4 +99,92 @@ testParse = "testParse" ~:
       (Just (Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing),
     parseMove "Ka1-a2#" ChessBlack ~?= 
       (Just (Piece { color = ChessBlack, ptype = K, moved = False }, (7, 0), (6, 0)), Nothing)
+  ]
+
+testCastleValidate :: Test
+testCastleValidate = "testCastleValidate" ~:
+  TestList [
+    -- Valid
+      -- Kingside Black
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,6)),
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,7), (0,5))
+    ) ChessBlack validCastle ~?= True,
+      -- Kingside White
+    validate (
+      Just (Piece {color = ChessWhite, ptype = K, moved = False}, (7,4), (7,6)),
+      Just (Piece {color = ChessWhite, ptype = R, moved = False}, (7,7), (7,5))
+    ) ChessWhite validCastle ~?= True,
+      -- Queenside Black
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,2)),
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (0,3))
+    ) ChessBlack validCastle ~?= True,
+      -- Queenside White
+    validate (
+      Just (Piece {color = ChessWhite, ptype = K, moved = False}, (7,4), (7,2)),
+      Just (Piece {color = ChessWhite, ptype = R, moved = False}, (7,0), (7,3))
+    ) ChessWhite validCastle ~?= True,
+
+    -- Invalid
+      -- Wrong color
+    validate (
+      Just (Piece {color = ChessWhite, ptype = K, moved = False}, (7,4), (7,2)),
+      Just (Piece {color = ChessWhite, ptype = R, moved = False}, (7,0), (7,3))
+    ) ChessBlack validCastle ~?= False,
+      -- Space occupied
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,6)),
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,7), (0,5))
+    ) ChessBlack startState ~?= False,
+      -- Not first move for king
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,2)),
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (0,3))
+    ) ChessBlack invalidCastle1 ~?= False,
+      -- Not first move for rook
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,2)),
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (0,3))
+    ) ChessBlack invalidCastle2 ~?= False,
+      -- Wrong piece
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,2)),
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (0,3))
+    ) ChessBlack invalidCastle3 ~?= False,
+      -- No rook present
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (0,4), (0,2)),
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (0,3))
+    ) ChessBlack invalidCastle4 ~?= False
+  ]
+
+testPawnValidate :: Test
+testPawnValidate = "testPawnValidate" ~:
+  TestList [
+    -- Move pawn: Valid
+      -- Move two spaces on first turn
+    validate (
+      Just (Piece {color = ChessBlack, ptype = P, moved = False}, (1,1), (3,1)),
+      Nothing
+    ) ChessBlack startState ~?= True,
+      -- Move single space on first turn
+    validate (
+      Just (Piece {color = ChessBlack, ptype = P, moved = False}, (1,1), (2,1)),
+      Nothing
+    ) ChessBlack startState ~?= True
+      -- Move single space after first turn
+    -- validate (
+    --   Just Piece {color = ChessBlack, ptype = P, moved = False}, (2,1), (3,1),
+    --   Nothing
+    -- ) ChessBlack startState ~?= True
+      -- Move diagonally to capture piece
+    
+    -- Move pawn: Invalid
+      -- Empty space
+      -- Wrong piece
+      -- Move anywhere but one space ahead, two ahead, or diagonally
+      -- Move two spaces after first turn
+      -- Move forward one but space is occupied
+      -- Move diagonally but no opponent piece present
   ]
