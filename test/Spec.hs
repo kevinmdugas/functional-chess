@@ -168,23 +168,61 @@ testPawnValidate = "testPawnValidate" ~:
       Just (Piece {color = ChessBlack, ptype = P, moved = False}, (1,1), (3,1)),
       Nothing
     ) ChessBlack startState ~?= True,
-      -- Move single space on first turn
+      -- Move single space in black direction
     validate (
       Just (Piece {color = ChessBlack, ptype = P, moved = False}, (1,1), (2,1)),
       Nothing
-    ) ChessBlack startState ~?= True
-      -- Move single space after first turn
-    -- validate (
-    --   Just Piece {color = ChessBlack, ptype = P, moved = False}, (2,1), (3,1),
-    --   Nothing
-    -- ) ChessBlack startState ~?= True
-      -- Move diagonally to capture piece
+    ) ChessBlack startState ~?= True,
+      -- Move single space in white direction
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (6,1), (5,1)),
+      Nothing
+    ) ChessWhite startState ~?= True,
+      -- Move diagonally to capture piece: black
+    validate (
+      Just (Piece {color = ChessBlack, ptype = P, moved = False}, (0,1), (1,0)),
+      Nothing
+    ) ChessBlack validPawn ~?= True,
+      -- Move diagonally to capture piece: white
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (1,0), (0,1)),
+      Nothing
+    ) ChessWhite validPawn ~?= True,
     
     -- Move pawn: Invalid
       -- Empty space
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (1,2), (0,1)),
+      Nothing
+    ) ChessWhite validPawn ~?= False,
       -- Wrong piece
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (0,1), (1,1)),
+      Nothing
+    ) ChessWhite validPawn ~?= False,
+      -- Move wrong direction for color
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (1,0), (2,0)),
+      Nothing
+    ) ChessWhite validPawn ~?= False,
       -- Move anywhere but one space ahead, two ahead, or diagonally
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (1,0), (1,1)),
+      Nothing
+    ) ChessWhite validPawn ~?= False,
       -- Move two spaces after first turn
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (2,2), (1,0)),
+      Nothing
+    ) ChessWhite validPawn ~?= False,
       -- Move forward one but space is occupied
+    validate (
+      Just (Piece {color = ChessBlack, ptype = P, moved = False}, (3,2), (4,2)),
+      Nothing
+    ) ChessBlack validPawn ~?= False,
       -- Move diagonally but no opponent piece present
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (4,2), (3,1)),
+      Nothing
+    ) ChessWhite validPawn ~?= False
   ]

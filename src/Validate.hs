@@ -5,7 +5,7 @@ import State
 
 import Data.Maybe
 
-data Direction = H | V | D deriving (Eq)
+data Direction = H | V | D | DQ1 | DQ2 | DQ3 | DQ4 deriving (Eq)
 type Vector = [Maybe Piece]
 
 validate :: (Maybe ChessMove, Maybe ChessMove) -> ChessColor -> GameState -> Bool
@@ -22,7 +22,7 @@ validateStandard (expectedStart, start, end) player state = do
   validStartPos expectedStart actualStart &&
     validEndPos player actualEnd && 
     ( case ptype expectedStart of
-        P -> True
+        P -> validatePawn player start end state
         _ -> False )
 
 validateCastle :: (ChessMove, ChessMove) -> ChessColor -> GameState -> Bool
@@ -35,27 +35,51 @@ validateCastle ((k, ks, ke), (r, rs, re)) player state = do
     validEndPos player (getPiece state re)
 
 validatePawn :: ChessColor -> Pos -> Pos -> GameState -> Bool
-validatePawn player (sr, sc) end state = case end of
-  (sr+1, sc) -> isNothing (getPiece state end)
-  (sr+2, sc) -> firstMove startPiece
-  (sr+1, sc+1) ->
-  (sr+1. sc-1) ->
-  (_, _) -> False
+validatePawn player (sr, sc) end state 
+  | (player == ChessBlack && end == (sr+1, sc)) ||
+    (player == ChessWhite && end == (sr-1, sc)) = isNothing (getPiece state end)
+  | (player == ChessBlack && end == (sr+2, sc)) ||
+    (player == ChessWhite && end == (sr-2, sc))  =
+      firstMove (getPiece state (sr, sc)) && 
+      isNothing (getPiece state (sr+1, sc)) && 
+      isNothing (getPiece state (sr+2, sc))
+  | (player == ChessBlack && (end == (sr+1, sc+1) || end == (sr+1, sc-1))) ||
+    (player == ChessWhite && (end == (sr-1, sc-1) || end == (sr-1, sc+1))) =
+      isOppPiece (getPiece state end) player
+  | otherwise = False
 
-createVector :: Direction -> Pos -> Pos -> GameState -> Maybe Vector
+isOppPiece :: Maybe Piece -> ChessColor -> Bool
+isOppPiece Nothing _ = False
+isOppPiece (Just p) player = color p == oppColor player
+  
+createVector :: Direction -> Pos -> Pos -> GameState -> Vector
 createVector dir (sr, sc) (er, ec) state = case dir of
-  V -> if sc /= ec then Nothing else do
-        let (s, e) = getVerticalBounds sr er
-        Just [getPiece state (i,sc) | i <- [s..e]]
+  V   -> do
+          let (s, e) = getHVBounds sr er
+          [getPiece state (i,sc) | i <- [s..e]]
+  H   -> do
+          let (s, e) = getHVBounds sc ec
+          [getPiece state (sr,j) | j <- [s..e]]
+  DQ1 -> do
+          let coords = zip [sr+1..er-1] [sc+1..ec-1]
+          [getPiece state (i, j) | (i, j) <- coords]
+  DQ2 -> do
+          let coords = zip [sr+1..er-1] (reverse [ec+1..sc-1])
+          [getPiece state (i, j) | (i, j) <- coords]
+  DQ3 -> do
+          let coords = zip [er+1..sr-1] [ec+1..sc-1]
+          [getPiece state (i, j) | (i, j) <- coords]
+  DQ4 -> do
+          let coords = zip (reverse [er+1..sr-1]) [sc+1..ec-1]
+          [getPiece state (i, j) | (i, j) <- coords]
 
-getVerticalBounds :: Int -> Int -> Pos
-getVerticalBounds sr er | sr+1 > er = (er, sr+1)
-                        | otherwise = (sr+1, er)
+getHVBounds :: Int -> Int -> Pos
+getHVBounds s e | s > e     = (e, s-1)
+                | otherwise = (s+1, e)
 
-isClearPath :: Maybe Vector -> Bool
-isClearPath Nothing = False
-isClearPath (Just []) = True
-isClearPath (Just vs) = foldr ((&&) . isNothing) True vs
+isClearPath :: Vector -> Bool
+isClearPath [] = True
+isClearPath vs = foldr ((&&) . isNothing) True vs
 
 validEndPos :: ChessColor -> Maybe Piece -> Bool
 validEndPos _ Nothing = True

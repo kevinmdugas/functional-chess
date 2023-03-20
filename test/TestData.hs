@@ -171,3 +171,11 @@ invalidCastle4 = [
     Nothing, Just (Piece ChessBlack Q False), 
     Just (Piece ChessWhite K False), Nothing, 
     Just (Piece ChessBlack N False), Just (Piece ChessWhite R False) ]]
+
+validPawn :: GameState
+validPawn = [
+  [ Nothing, Just (Piece ChessBlack P False), Nothing ],
+  [ Just (Piece ChessWhite P False), Nothing, Nothing ],
+  [ Nothing, Nothing, Just (Piece ChessWhite P True) ],
+  [ Nothing, Nothing, Just (Piece ChessBlack P True) ],
+  [ Nothing, Nothing, Just (Piece ChessWhite P True) ]]
