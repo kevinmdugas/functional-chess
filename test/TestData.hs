@@ -179,3 +179,21 @@ validPawn = [
   [ Nothing, Nothing, Just (Piece ChessWhite P True) ],
   [ Nothing, Nothing, Just (Piece ChessBlack P True) ],
   [ Nothing, Nothing, Just (Piece ChessWhite P True) ]]
+
+validRook :: GameState
+validRook = [
+  [ Nothing, Just (Piece ChessBlack R False), Nothing ],
+  [ Just (Piece ChessWhite R False), Nothing, Nothing ],
+  [ Nothing, Just (Piece ChessBlack R False), Just (Piece ChessWhite P True) ],
+  [ Nothing, Nothing, Nothing ],
+  [ Nothing, Just (Piece ChessWhite R True), Just (Piece ChessWhite R True) ],
+  [ Just (Piece ChessBlack R False), Nothing, Just (Piece ChessWhite R True) ]]
+
+validBishop :: GameState
+validBishop = [
+  [ Nothing, Nothing, Nothing, Nothing, Just (Piece ChessWhite B False) ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Just (Piece ChessBlack B False), Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ]]

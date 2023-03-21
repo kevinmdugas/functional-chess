@@ -14,7 +14,8 @@ main = do
     testMove,
     testParse,
     testCastleValidate,
-    testPawnValidate ]
+    testPawnValidate,
+    testRookValidate ]
   return ()
   
 -- The testMove data uses a board of dimensions 5 x 2 to be able to statically
@@ -225,4 +226,67 @@ testPawnValidate = "testPawnValidate" ~:
       Just (Piece {color = ChessWhite, ptype = P, moved = False}, (4,2), (3,1)),
       Nothing
     ) ChessWhite validPawn ~?= False
+  ]
+
+testRookValidate :: Test
+testRookValidate = "testRookValidate" ~:
+  TestList [
+    -- Valid
+      -- Horizontal left
+    validate (
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,1), (0,0)),
+      Nothing
+    ) ChessBlack validRook ~?= True,
+      -- Horizontal right
+    validate (
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,1), (0,2)),
+      Nothing
+    ) ChessBlack validRook ~?= True,
+      -- Vertical up
+    validate (
+      Just (Piece {color = ChessWhite, ptype = R, moved = False}, (1,0), (4,0)),
+      Nothing
+    ) ChessWhite validRook ~?= True,
+      -- Vertical down
+    validate (
+      Just (Piece {color = ChessWhite, ptype = R, moved = False}, (1,0), (0,0)),
+      Nothing
+    ) ChessWhite validRook ~?= True,
+      -- Vertical (descending) clear path and capture
+    validate (
+      Just (Piece {color = ChessWhite, ptype = R, moved = False}, (4,1), (2,1)),
+      Nothing
+    ) ChessWhite validRook ~?= True,
+      -- Vertical (ascending) clear path and capture
+    validate (
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (2,1), (4,1)),
+      Nothing
+    ) ChessBlack validRook ~?= True,
+      -- Horizontal (left to right) clear path and capture
+    validate (
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (5,0), (5,2)),
+      Nothing
+    ) ChessBlack validRook ~?= True,
+      -- Horizontal (right to left) clear path and capture
+    validate (
+      Just (Piece {color = ChessWhite, ptype = R, moved = False}, (5,2), (5,0)),
+      Nothing
+    ) ChessWhite validRook ~?= True,
+
+    -- Invalid
+      -- Horizontal space taken
+    validate (
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (0,1)),
+      Nothing
+    ) ChessBlack startState ~?= False,
+      -- Vertical space taken
+    validate (
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (1,0)),
+      Nothing
+    ) ChessBlack startState ~?= False,
+      -- End position free but path not clear
+    validate (
+      Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (3,0)),
+      Nothing
+    ) ChessBlack startState ~?= False
   ]
