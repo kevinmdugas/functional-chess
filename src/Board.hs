@@ -8,6 +8,7 @@ module Board(
   Board,
   GameState,
   ChessMove,
+  Captures,
   emptyBoard,
   updateBoard
 ) where
@@ -16,6 +17,7 @@ data ChessColor = ChessBlack | ChessWhite deriving Eq
 instance Show ChessColor where
   show ChessBlack = "Black"
   show ChessWhite = "White"
+  
 oppColor :: ChessColor -> ChessColor
 oppColor ChessWhite = ChessBlack
 oppColor ChessBlack = ChessWhite
@@ -43,6 +45,8 @@ type Board = [[Square]]
 type GameState = [[Maybe Piece]]
 
 type ChessMove = (Piece, Pos, Pos)
+
+type Captures = ([Maybe Piece], [Maybe Piece])
 
 emptyBoard :: Board
 emptyBoard = [[Square Nothing 

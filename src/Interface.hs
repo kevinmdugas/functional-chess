@@ -1,34 +1,62 @@
 module Interface (
   menu,
+  reviewMenu,
   display,
+  printBoard,
 ) where
 
 import Board
 import System.Console.ANSI
 
 menu :: [String]
-menu = [ "+--------------------------+",
-         "|     FUNCTIONAL CHESS     |",
-         "|--------------------------|",
-         "|                          |",
-         "| 1. Play (Human vs Human) |",
-         "| 2. Load game for review  |",
-         "| 3. Quit                  |",
-         "|                          |",
-         "+--------------------------+" ]
+menu = 
+  [ "+-------------------------------+",
+    "|       FUNCTIONAL CHESS        |",
+    "|-------------------------------|",
+    "|                               |",
+    "| 1. Play (Human vs Human)      |",
+    "| 2. Load game for review       |",
+    "| 3. Quit                       |",
+    "|                               |",
+    "+-------------------------------+" ]
 
--- Display who's turn it is
+reviewMenu :: [String]
+reviewMenu = 
+  [ "+-------------------------------+",
+    "|          Game Review          |",
+    "|-------------------------------|",
+    "| Game review allows you to     |",
+    "| step through recorded games.  |",
+    "|                               |",
+    "| Enter the path to a recorded  |",
+    "| game file to start a review.  |",
+    "|                               |",
+    "| Enter the '>' character to go |",
+    "| forward a move or '<' to go   |",
+    "| back a move.                  |",
+    "|                               |",
+    "| Enter \"flip\" to see the board |",
+    "| from the other player's       |",
+    "| perspective, or \"quit\" to     |",
+    "| return to the main menu.      |",
+    "+-------------------------------+" ]
 
-display :: Board -> ChessColor -> (Pos, Pos) -> IO ()
-display board player lastMove = do
+display :: Board -> Captures -> ChessColor -> (Pos, Pos) -> IO ()
+display board (whiteCaps, blackCaps) player lastMove = do
   clearScreen
   putStrLn $ "\t\t" ++ (show player) ++ "'s Turn"
-  infoBar $ oppColor player
+  infoBar (oppColor player) (if oppColor player == ChessWhite then whiteCaps else blackCaps)
   printBoard board player lastMove
-  infoBar player
+  infoBar player (if player == ChessWhite then whiteCaps else blackCaps)
 
-infoBar :: ChessColor -> IO ()
-infoBar player = putStrLn $ "\t   " ++ (show player) ++ "\t    " ++ "~pieces captured~"
+infoBar :: ChessColor -> [Maybe Piece] -> IO ()
+infoBar player ps = 
+  putStrLn $ "\t   " ++ (show player) ++ "\t    " ++ (printCaptures ps)
+
+printCaptures :: [Maybe Piece] -> String
+printCaptures []            = ""
+printCaptures ((Just p):ps) = show (ptype p) ++ printCaptures ps
+printCaptures (Nothing:ps)  = printCaptures ps
 
 printBoard :: Board -> ChessColor -> (Pos, Pos) -> IO ()
 printBoard board player lastMove = do
@@ -39,9 +67,9 @@ printBoard board player lastMove = do
       >> putStrLn " +------------------------+ "
       >> putStrLn "   a  b  c  d  e  f  g  h   "
   else 
-    putStrLn      "   a  b  c  d  e  f  g  h   "
+    putStrLn      "   h  g  f  e  d  c  b  a   "
       >> putStrLn " +------------------------+ "
-      >> mapM_ (printRow lastMove) (zip ((reverse . map reverse) board) [8,7..1])
+      >> mapM_ (printRow lastMove) (zip ((reverse . map reverse) board) [1,2..8])
       >> putStrLn " +------------------------+ "
       >> putStrLn "   h  g  f  e  d  c  b  a   "
 
@@ -65,14 +93,11 @@ printSquare (start, end) (Square piece tileColor index) =
 printPiece :: Maybe Piece -> IO ()
 printPiece Nothing = putStr "   "
 printPiece (Just piece) = case color piece of
-  ChessWhite -> setSGR [SetColor Foreground Dull Blue] >> putStr (printSymbol (ptype piece)) >> setSGR [Reset]
-  ChessBlack -> setSGR [SetColor Foreground Dull Red]  >> putStr (printSymbol (ptype piece)) >> setSGR [Reset]
-
-printSymbol :: PieceType -> String
-printSymbol ptype = case ptype of
-  P -> " P "
-  N -> " N "
-  B -> " B "
-  R -> " R "
-  Q -> " Q "
-  K -> " K "
+  ChessWhite -> 
+    setSGR [SetColor Foreground Dull Blue] >> 
+    putStr (" " ++ show (ptype piece) ++ " ") >> 
+    setSGR [Reset]
+  ChessBlack -> 
+    setSGR [SetColor Foreground Dull Red] >> 
+    putStr (" " ++ show (ptype piece) ++ " ") >> 
+    setSGR [Reset]
