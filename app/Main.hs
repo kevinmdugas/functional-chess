@@ -27,9 +27,15 @@ play (caps, state, player, lastMove) = do
   let moveSet = parseMove moveStr player
   if validate moveSet player state then do
     let (captP, newState, newMove) = makeMove moveSet state
-    play (addCapture captP caps player, newState, nextPlayer, newMove)
+    if determineWinner captP then mapM_ putStrLn $ winScreen player
+    else
+      play (addCapture captP caps player, newState, nextPlayer, newMove)
   else do
     putStrLn "Invalid Move" >> play (caps, state, player, lastMove)
+
+determineWinner :: Maybe Piece -> Bool
+determineWinner Nothing = False
+determineWinner (Just p) = ptype p == K 
 
 review :: IO ()
 review = do

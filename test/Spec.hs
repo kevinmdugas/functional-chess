@@ -183,6 +183,11 @@ testPawnValidate = "testPawnValidate" ~:
       Just (Piece {color = ChessWhite, ptype = P, moved = False}, (6,1), (5,1)),
       Nothing
     ) ChessWhite startState ~?= True,
+      -- Move two spaces on first turn in white direction
+    validate (
+      Just (Piece {color = ChessWhite, ptype = P, moved = False}, (4,1), (2,1)),
+      Nothing
+    ) ChessWhite validPawn ~?= True,
       -- Move diagonally to capture piece: black
     validate (
       Just (Piece {color = ChessBlack, ptype = P, moved = False}, (0,1), (1,0)),

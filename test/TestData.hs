@@ -178,7 +178,7 @@ validPawn = [
   [ Just (Piece ChessWhite P False), Nothing, Nothing ],
   [ Nothing, Nothing, Just (Piece ChessWhite P True) ],
   [ Nothing, Nothing, Just (Piece ChessBlack P True) ],
-  [ Nothing, Nothing, Just (Piece ChessWhite P True) ]]
+  [ Nothing, Just (Piece ChessWhite P False), Just (Piece ChessWhite P True) ]]
 
 validRook :: GameState
 validRook = [

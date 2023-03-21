@@ -46,8 +46,7 @@ validatePawn player (sr, sc) end state
   | (player == ChessBlack && end == (sr+2, sc)) ||
     (player == ChessWhite && end == (sr-2, sc))  =
       firstMove (getPiece state (sr, sc)) && 
-      isNothing (getPiece state (sr+1, sc)) && 
-      isNothing (getPiece state (sr+2, sc))
+      isClearPath (createVector (Just V) (sr,sc) end state)
   | (player == ChessBlack && (end == (sr+1, sc+1) || end == (sr+1, sc-1))) ||
     (player == ChessWhite && (end == (sr-1, sc-1) || end == (sr-1, sc+1))) =
       isOppPiece (getPiece state end) player
