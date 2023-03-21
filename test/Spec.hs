@@ -16,7 +16,8 @@ main = do
     testCastleValidate,
     testPawnValidate,
     testRookValidate,
-    testBishopValidate ]
+    testBishopValidate,
+    testQueenValidate ]
   return ()
   
 -- The testMove data uses a board of dimensions 5 x 2 to be able to statically
@@ -363,4 +364,25 @@ testBishopValidate = "testBishopValidate" ~:
       Just (Piece {color = ChessBlack, ptype = B, moved = False}, (2,2), (4,3)),
       Nothing
     ) ChessBlack validBishop ~?= False
+  ]
+
+testQueenValidate :: Test
+testQueenValidate = "testQueenValidate" ~:
+  TestList [
+    -- Valid
+      -- Horizontal capture
+    validate (
+      Just (Piece {color = ChessBlack, ptype = Q, moved = False}, (2,2), (2,4)),
+      Nothing
+    ) ChessBlack validQueen ~?= True,
+      -- Vertical capture
+    validate (
+      Just (Piece {color = ChessBlack, ptype = Q, moved = False}, (2,2), (3,2)),
+      Nothing
+    ) ChessBlack validQueen ~?= True,
+      -- Diagonal capture
+    validate (
+      Just (Piece {color = ChessBlack, ptype = Q, moved = False}, (2,2), (0,4)),
+      Nothing
+    ) ChessBlack validQueen ~?= True
   ]

@@ -202,3 +202,17 @@ validBishop = [
   [ Nothing, Nothing, bB_____, Nothing, Nothing ],
   [ bB_____, wB_____, Nothing, Nothing, Nothing ],
   [ Nothing, Nothing, Nothing, Nothing, wB_____ ]]
+
+wQ_____ :: Maybe Piece
+wQ_____ = Just (Piece ChessWhite Q False)
+
+bQ_____ :: Maybe Piece
+bQ_____ = Just (Piece ChessBlack Q False)
+
+validQueen :: GameState
+validQueen = [
+  [ Nothing, wB_____, Nothing, wB_____, wB_____ ],
+  [ Nothing, Nothing, wB_____, Nothing, wB_____ ],
+  [ Nothing, Nothing, bQ_____, Nothing, wQ_____ ],
+  [ bB_____, wB_____, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, bQ_____, Nothing, wQ_____ ]]

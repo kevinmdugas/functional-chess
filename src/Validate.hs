@@ -25,6 +25,7 @@ validateStandard (expectedStart, start, end) player state = do
         P -> validatePawn player start end state
         R -> validateHorVert start end state
         B -> validateDiag start end state
+        Q -> validateDiag start end state || validateHorVert start end state
         _ -> False )
 
 validateCastle :: (ChessMove, ChessMove) -> ChessColor -> GameState -> Bool
