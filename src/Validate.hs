@@ -52,48 +52,61 @@ validatePawn player (sr, sc) end state
 
 validateHorVert :: Pos -> Pos -> GameState -> Bool
 validateHorVert (sr, sc) (er, ec) state 
-  | sr == er = isClearPath $ createVector H (sr, sc) (er, ec) state
-  | sc == ec = isClearPath $ createVector V (sr, sc) (er, ec) state
+  | sr == er = isClearPath $ createVector (Just H) (sr, sc) (er, ec) state
+  | sc == ec = isClearPath $ createVector (Just V) (sr, sc) (er, ec) state
   | otherwise = False
 
 validateDiag :: Pos -> Pos -> GameState -> Bool
-validateDiag (sr, sc) (er, ec) state = case (er, ec) of
-  (r, c) | r > sr && c > sc -> isClearPath $ createVector DQ1 (sr, sc) (r, c) state
-  (r, c) | r > sr && c < sc -> False
-  (r, c) | r < sr && c < sc -> False
-  (r, c) | r < sr && c > sc -> False
+validateDiag start end state = do
+  let quadrant = getQuadrant start end
+  isClearPath $ createVector quadrant start end state
+
+getQuadrant :: Pos -> Pos -> Maybe Direction
+getQuadrant (sr, sc) end = case end of
+  (er, ec) | er < sr && ec > sc -> Just DQ1
+  (er, ec) | er < sr && ec < sc -> Just DQ2
+  (er, ec) | er > sr && ec < sc -> Just DQ3
+  (er, ec) | er > sr && ec > sc -> Just DQ4
+  (_, _) -> Nothing
 
 isOppPiece :: Maybe Piece -> ChessColor -> Bool
 isOppPiece Nothing _ = False
 isOppPiece (Just p) player = color p == oppColor player
   
-createVector :: Direction -> Pos -> Pos -> GameState -> Maybe Vector
+createVector :: Maybe Direction -> Pos -> Pos -> GameState -> Maybe Vector
 createVector dir (sr, sc) (er, ec) state = case dir of
-  V   -> do
-          let (s, e) = getHVBounds sr er
-          Just [getPiece state (i,sc) | i <- [s..e]]
-  H   -> do
-          let (s, e) = getHVBounds sc ec
-          Just [getPiece state (sr,j) | j <- [s..e]]
-  DQ1 -> do
-          let coords = zip [sr+1..er] [sc+1..ec]
-          if inPath end coords then
-            Just [getPiece state (i, j) | (i, j) <- init coords]
-          else Nothing
-  DQ2 -> do
-          let coords = zip [sr+1..er-1] (reverse [ec+1..sc-1])
-          Just [getPiece state (i, j) | (i, j) <- coords]
-  DQ3 -> do
-          let coords = zip [er+1..sr-1] [ec+1..sc-1]
-          Just [getPiece state (i, j) | (i, j) <- coords]
-  DQ4 -> do
-          let coords = zip (reverse [er+1..sr-1]) [sc+1..ec-1]
-          Just [getPiece state (i, j) | (i, j) <- coords]
+  Just V   -> do
+                let (s, e) = getHVBounds sr er
+                Just [getPiece state (i,sc) | i <- [s..e]]
+  Just H   -> do
+                let (s, e) = getHVBounds sc ec
+                Just [getPiece state (sr,j) | j <- [s..e]]
+  Just DQ2 -> do
+                if inPath (er, ec) (zip (reverse [er..sr-1]) (reverse [ec..sc-1])) then do
+                  let coords = zip [er+1..sr-1] [ec+1..sc-1]
+                  Just [getPiece state (i, j) | (i, j) <- coords]
+                else Nothing
+  Just DQ3 -> do
+                if inPath (er, ec) (zip [sr+1..er] (reverse [ec..sc-1])) then do
+                  let coords = zip [sr+1..er-1] (reverse [ec+1..sc-1])
+                  Just [getPiece state (i, j) | (i, j) <- coords]
+                else Nothing
+  Just DQ1 -> do
+                if inPath (er,ec) (zip (reverse [er..sr-1]) [sc+1..ec]) then do
+                  let coords = zip (reverse [er+1..sr-1]) [sc+1..ec-1]
+                  Just [getPiece state (i, j) | (i, j) <- coords]
+                else Nothing
+  Just DQ4 -> do
+                if inPath (er, ec) (zip [sr+1..er] [sc+1..ec]) then do
+                  let coords = zip [sr+1..er-1] [sc+1..ec-1]
+                  Just [getPiece state (i, j) | (i, j) <- coords]
+                else Nothing
+  Nothing  -> Nothing
 
 inPath :: Pos -> [Pos] -> Bool 
 inPath _ [] = False
-inPath end (x:xs) | a == x    = True
-                  | otherwise = inPath end xs
+inPath end (x:xs) | end == x    = True
+                  | otherwise   = inPath end xs
 
 getHVBounds :: Int -> Int -> Pos
 getHVBounds s e | s > e     = (e+1, s-1)

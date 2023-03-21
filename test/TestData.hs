@@ -189,11 +189,16 @@ validRook = [
   [ Nothing, Just (Piece ChessWhite R True), Just (Piece ChessWhite R True) ],
   [ Just (Piece ChessBlack R False), Nothing, Just (Piece ChessWhite R True) ]]
 
+wB_____ :: Maybe Piece
+wB_____ = Just (Piece ChessWhite B False)
+
+bB_____ :: Maybe Piece
+bB_____ = Just (Piece ChessBlack B False)
+
 validBishop :: GameState
 validBishop = [
-  [ Nothing, Nothing, Nothing, Nothing, Just (Piece ChessWhite B False) ],
-  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
-  [ Nothing, Nothing, Just (Piece ChessBlack B False), Nothing, Nothing ],
-  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
-  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
-  [ Nothing, Nothing, Nothing, Nothing, Nothing ]]
+  [ Nothing, wB_____, Nothing, wB_____, wB_____ ],
+  [ Nothing, Nothing, wB_____, Nothing, wB_____ ],
+  [ Nothing, Nothing, bB_____, Nothing, Nothing ],
+  [ bB_____, wB_____, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, wB_____ ]]

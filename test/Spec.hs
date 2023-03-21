@@ -15,7 +15,8 @@ main = do
     testParse,
     testCastleValidate,
     testPawnValidate,
-    testRookValidate ]
+    testRookValidate,
+    testBishopValidate ]
   return ()
   
 -- The testMove data uses a board of dimensions 5 x 2 to be able to statically
@@ -289,4 +290,77 @@ testRookValidate = "testRookValidate" ~:
       Just (Piece {color = ChessBlack, ptype = R, moved = False}, (0,0), (3,0)),
       Nothing
     ) ChessBlack startState ~?= False
+  ]
+
+testBishopValidate :: Test
+testBishopValidate = "testBishopValidate" ~:
+  TestList [
+    -- Valid
+      -- Q1 Clear path and capture
+    validate (
+      Just (Piece {color = ChessBlack, ptype = B, moved = False}, (2,2), (0,4)),
+      Nothing
+    ) ChessBlack validBishop ~?= True,
+      -- Q2 Clear path and capture
+    validate (
+      Just (Piece {color = ChessWhite, ptype = B, moved = False}, (4,4), (2,2)),
+      Nothing
+    ) ChessWhite validBishop ~?= True,
+      -- Q2 move one space
+    validate (
+      Just (Piece {color = ChessWhite, ptype = B, moved = False}, (4,4), (3,3)),
+      Nothing
+    ) ChessWhite validBishop ~?= True,
+      -- Q3 Clear path and capture; one space
+    validate (
+      Just (Piece {color = ChessBlack, ptype = B, moved = False}, (2,2), (3,1)),
+      Nothing
+    ) ChessBlack validBishop ~?= True,
+      -- Q4 Clear path and capture; one space
+    validate (
+      Just (Piece {color = ChessBlack, ptype = B, moved = False}, (2,2), (4,4)),
+      Nothing
+    ) ChessBlack validBishop ~?= True,
+
+    -- Invalid
+      -- Q1 blocked path
+    validate (
+      Just (Piece {color = ChessBlack, ptype = B, moved = False}, (3,0), (0,3)),
+      Nothing
+    ) ChessBlack validBishop ~?= False,
+      -- Q1 not in vector path
+    validate (
+      Just (Piece {color = ChessBlack, ptype = B, moved = False}, (2,2), (1,4)),
+      Nothing
+    ) ChessBlack validBishop ~?= False,
+      -- Q2 blocked path
+    validate (
+      Just (Piece {color = ChessWhite, ptype = B, moved = False}, (4,4), (0,0)),
+      Nothing
+    ) ChessWhite validBishop ~?= False,
+      -- Q2 not in vector path
+    validate (
+      Just (Piece {color = ChessWhite, ptype = B, moved = False}, (4,4), (2,1)),
+      Nothing
+    ) ChessWhite validBishop ~?= False,
+      -- Q3 blocked path
+    validate (
+      Just (Piece {color = ChessBlack, ptype = B, moved = False}, (2,2), (4,0)),
+      Nothing
+    ) ChessBlack validBishop ~?= False,
+      -- Q3 not in vector path
+    validate (
+      Just (Piece {color = ChessWhite, ptype = B, moved = False}, (1,2), (2,0)),
+      Nothing
+    ) ChessWhite validBishop ~?= False,
+      -- Q4 blocked path
+    validate (
+      Just (Piece {color = ChessWhite, ptype = B, moved = False}, (0,1), (3,4)),
+      Nothing
+    ) ChessWhite validBishop ~?= False,
+      -- Q4 not in vector path
+    validate (
+      Just (Piece {color = ChessBlack, ptype = B, moved = False}, (2,2), (4,3)),
+      Nothing
+    ) ChessBlack validBishop ~?= False
   ]
