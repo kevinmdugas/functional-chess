@@ -106,6 +106,11 @@ createVector dir (sr, sc) (er, ec) state = case dir of
   Just H   -> do
                 let (s, e) = getHVBounds sc ec
                 Just [getPiece state (sr,j) | j <- [s..e]]
+  Just DQ1 -> do
+                if inPath (er,ec) (zip (reverse [er..sr-1]) [sc+1..ec]) then do
+                  let coords = zip (reverse [er+1..sr-1]) [sc+1..ec-1]
+                  Just [getPiece state (i, j) | (i, j) <- coords]
+                else Nothing
   Just DQ2 -> do
                 if inPath (er, ec) (zip (reverse [er..sr-1]) (reverse [ec..sc-1])) then do
                   let coords = zip [er+1..sr-1] [ec+1..sc-1]
@@ -114,11 +119,6 @@ createVector dir (sr, sc) (er, ec) state = case dir of
   Just DQ3 -> do
                 if inPath (er, ec) (zip [sr+1..er] (reverse [ec..sc-1])) then do
                   let coords = zip [sr+1..er-1] (reverse [ec+1..sc-1])
-                  Just [getPiece state (i, j) | (i, j) <- coords]
-                else Nothing
-  Just DQ1 -> do
-                if inPath (er,ec) (zip (reverse [er..sr-1]) [sc+1..ec]) then do
-                  let coords = zip (reverse [er+1..sr-1]) [sc+1..ec-1]
                   Just [getPiece state (i, j) | (i, j) <- coords]
                 else Nothing
   Just DQ4 -> do

@@ -5,6 +5,7 @@ import State
 import Interface
 import LANParser
 import GameParser
+import Validate
 
 main :: IO ()
 main = do
@@ -24,10 +25,11 @@ play (caps, state, player, lastMove) = do
   moveStr <- getLine
   let nextPlayer = oppColor player
   let moveSet = parseMove moveStr player
-  -- putStrLn (show moveSet)
-  case makeMove moveSet state of
-    Nothing -> putStrLn "Invalid Move" >> play (caps, state, player, lastMove)
-    Just (newP, newState, newMove) -> play (addCapture newP caps player, newState, nextPlayer, newMove)
+  if validate moveSet player state then do
+    let (captP, newState, newMove) = makeMove moveSet state
+    play (addCapture captP caps player, newState, nextPlayer, newMove)
+  else do
+    putStrLn "Invalid Move" >> play (caps, state, player, lastMove)
 
 review :: IO ()
 review = do
@@ -40,14 +42,13 @@ review = do
 stepLoop :: [(Maybe ChessMove, Maybe ChessMove)] -> Int -> (Captures, GameState, ChessColor, (Pos, Pos)) -> IO ()
 stepLoop moveList n (caps, state, player, lastMove) = do
   printBoard (updateBoard emptyBoard state) player lastMove
-  -- if n == length moveList then putStrLn "Result: " ++ result
   putStrLn "Options: >, <, flip, quit"
   choice <- getLine
   case choice of
     ">"    -> 
       if n + 1 >= length moveList
         then putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
-        else case makeMove (moveList !! n) state of
+        else case makeRevMove (moveList !! n) state of
           Nothing -> 
             putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
           Just (newP, newState, newMove) ->
@@ -55,7 +56,7 @@ stepLoop moveList n (caps, state, player, lastMove) = do
     "<"    -> 
       if n - 1 < 0
         then putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
-        else case makeMove (reverseMove (moveList !! (n - 1))) state of 
+        else case makeRevMove (reverseMove (moveList !! (n - 1))) state of 
           Nothing -> 
             putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
           Just (_, newState, (x, y)) -> do
@@ -64,42 +65,3 @@ stepLoop moveList n (caps, state, player, lastMove) = do
     "flip" -> stepLoop moveList n (caps, state, oppColor player, lastMove)
     "quit" -> main
     _      -> putStrLn "Invalid option" >> stepLoop moveList n (caps, state, player, lastMove)
-
-makeMove :: (Maybe ChessMove, Maybe ChessMove) -> GameState -> Maybe (Maybe Piece, GameState, (Pos, Pos))
-makeMove moveSet state = case moveSet of
-  (Just (_, start1, end1), Just (_, start2, end2)) -> do -- Castling
-    let (_, newState1) = apply move (start1, end1) state
-    let (_, newState2) = apply move (start2, end2) newState1
-    return (Nothing, newState2, (start1, end1))
-  (Just (_, start, end), Nothing) -> do -- Valid Input
-    let (newP, newState) = apply move (start, end) state
-    return (newP, newState, (start, end))
-  (_, _) -> do -- Invalid Input
-    Nothing
-
-reverseMove :: (Maybe ChessMove, Maybe ChessMove) -> (Maybe ChessMove, Maybe ChessMove)
-reverseMove (Just (p1, start1, end1), Just (p2, start2, end2)) =
-  (Just (p1, end1, start1), Just (p2, end2, start2))
-reverseMove (Just (p, start, end), Nothing) =
-  (Just (p, end, start), Nothing)
-reverseMove (_, _) = (Nothing, Nothing)
-
-placePiece :: Maybe Piece -> Pos -> GameState -> GameState
-placePiece p (i, j) state = 
-  take i state ++ [setPiece j (state !! i)] ++ drop (i + 1) state
-  where
-    setPiece :: Int -> [Maybe Piece] -> [Maybe Piece]
-    setPiece j' state' = take j' state' ++ [p] ++ drop (j' + 1) state'
-
-addCapture :: Maybe Piece -> Captures -> ChessColor -> Captures
-addCapture p (whiteCaps, blackCaps) ChessWhite = (whiteCaps ++ [p], blackCaps)
-addCapture p (whiteCaps, blackCaps) ChessBlack = (whiteCaps, blackCaps ++ [p])
-
-removeCapture :: Captures -> ChessColor -> (Captures, Maybe Piece)
-removeCapture (whiteCaps, blackCaps) clr = case clr of
-  ChessWhite -> case reverse whiteCaps of
-    [] -> ((whiteCaps, blackCaps), Nothing)
-    (p:ps) -> ((reverse ps, blackCaps), p)
-  ChessBlack -> case reverse blackCaps of
-    [] -> ((whiteCaps, blackCaps), Nothing)
-    (p:ps) -> ((whiteCaps, reverse ps), p)
