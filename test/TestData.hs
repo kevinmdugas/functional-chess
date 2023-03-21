@@ -212,7 +212,35 @@ bQ_____ = Just (Piece ChessBlack Q False)
 validQueen :: GameState
 validQueen = [
   [ Nothing, wB_____, Nothing, wB_____, wB_____ ],
-  [ Nothing, Nothing, wB_____, Nothing, wB_____ ],
+  [ Nothing, Nothing, wB_____, Nothing, wQ_____ ],
   [ Nothing, Nothing, bQ_____, Nothing, wQ_____ ],
   [ bB_____, wB_____, Nothing, Nothing, Nothing ],
   [ Nothing, Nothing, bQ_____, Nothing, wQ_____ ]]
+
+bN_____ :: Maybe Piece
+bN_____ = Just (Piece ChessBlack N False)
+
+wN_____ :: Maybe Piece
+wN_____ = Just (Piece ChessWhite N False)
+
+validKnight :: GameState
+validKnight = [
+  [ Nothing, wN_____, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, bN_____ ],
+  [ Nothing, Nothing, bN_____, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ]]
+
+bK_____ :: Maybe Piece
+bK_____ = Just (Piece ChessBlack K False)
+
+wK_____ :: Maybe Piece
+wK_____ = Just (Piece ChessWhite K False)
+
+validKing :: GameState
+validKing = [
+  [ Nothing, wN_____, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, wK_____, Nothing, bN_____ ],
+  [ Nothing, Nothing, bK_____, bN_____, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ]]

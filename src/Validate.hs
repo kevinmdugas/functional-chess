@@ -26,6 +26,8 @@ validateStandard (expectedStart, start, end) player state = do
         R -> validateHorVert start end state
         B -> validateDiag start end state
         Q -> validateDiag start end state || validateHorVert start end state
+        N -> validateKnight start end
+        K -> validateKing start end
         _ -> False )
 
 validateCastle :: (ChessMove, ChessMove) -> ChessColor -> GameState -> Bool
@@ -50,6 +52,28 @@ validatePawn player (sr, sc) end state
     (player == ChessWhite && (end == (sr-1, sc-1) || end == (sr-1, sc+1))) =
       isOppPiece (getPiece state end) player
   | otherwise = False
+
+validateKnight :: Pos -> Pos -> Bool
+validateKnight start end = inPath end (knightRadius start)
+
+knightRadius :: Pos -> [Pos]
+knightRadius (sr, sc) = [
+    (sr-2, sc+1), (sr-1, sc+2),   -- Q1
+    (sr-2, sc-1), (sr-1, sc-2),   -- Q2
+    (sr+2, sc-1), (sr+1, sc-2),   -- Q3
+    (sr+2, sc+1), (sr+1, sc+2)    -- Q4
+  ]
+
+validateKing :: Pos -> Pos -> Bool
+validateKing start end = inPath end (kingRadius start)
+
+kingRadius:: Pos -> [Pos]
+kingRadius (sr, sc) = [
+    (sr+1, sc), (sr-1, sc),
+    (sr, sc+1), (sr, sc-1),
+    (sr+1, sc-1), (sr-1, sc+1),
+    (sr+1, sc+1), (sr-1, sc-1)
+  ]
 
 validateHorVert :: Pos -> Pos -> GameState -> Bool
 validateHorVert (sr, sc) (er, ec) state 

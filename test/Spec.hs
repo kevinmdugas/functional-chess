@@ -17,7 +17,9 @@ main = do
     testPawnValidate,
     testRookValidate,
     testBishopValidate,
-    testQueenValidate ]
+    testQueenValidate,
+    testKnightValidate,
+    testKingValidate]
   return ()
   
 -- The testMove data uses a board of dimensions 5 x 2 to be able to statically
@@ -384,5 +386,64 @@ testQueenValidate = "testQueenValidate" ~:
     validate (
       Just (Piece {color = ChessBlack, ptype = Q, moved = False}, (2,2), (0,4)),
       Nothing
-    ) ChessBlack validQueen ~?= True
+    ) ChessBlack validQueen ~?= True,
+
+    -- Invalid
+      -- Horizontal wrong color
+    validate (
+      Just (Piece {color = ChessWhite, ptype = Q, moved = False}, (1,4), (1,2)),
+      Nothing
+    ) ChessWhite validQueen ~?= False
+    
+  ]
+
+testKnightValidate :: Test
+testKnightValidate = "testKnightValidate" ~:
+  TestList [
+    -- Valid
+      -- Capture
+    validate (
+      Just (Piece {color = ChessBlack, ptype = N, moved = False}, (2,2), (0,1)),
+      Nothing
+    ) ChessBlack validKnight ~?= True,
+    validate (
+      Just (Piece {color = ChessBlack, ptype = N, moved = False}, (2,2), (1,0)),
+      Nothing
+    ) ChessBlack validKnight ~?= True,
+
+    -- Invalid
+      -- Wrong color
+    validate (
+      Just (Piece {color = ChessBlack, ptype = N, moved = False}, (2,2), (1,4)),
+      Nothing
+    ) ChessBlack validKnight ~?= False,
+      -- Empty space
+    validate (
+      Just (Piece {color = ChessBlack, ptype = N, moved = False}, (2,2), (1,1)),
+      Nothing
+    ) ChessBlack validKnight ~?= False
+  ]
+
+testKingValidate :: Test
+testKingValidate = "testKingValidate" ~:
+  TestList [
+    -- Valid 
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (2,2), (1,2)),
+      Nothing
+    ) ChessBlack validKing ~?= True,
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (2,2), (2,1)),
+      Nothing
+    ) ChessBlack validKing ~?= True,
+
+    -- Invalid
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (2,2), (2,3)),
+      Nothing
+    ) ChessBlack validKing ~?= False,
+    validate (
+      Just (Piece {color = ChessBlack, ptype = K, moved = False}, (2,2), (0,3)),
+      Nothing
+    ) ChessBlack validKing ~?= False
   ]
