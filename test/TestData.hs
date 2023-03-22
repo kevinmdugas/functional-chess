@@ -171,3 +171,76 @@ invalidCastle4 = [
     Nothing, Just (Piece ChessBlack Q False), 
     Just (Piece ChessWhite K False), Nothing, 
     Just (Piece ChessBlack N False), Just (Piece ChessWhite R False) ]]
+
+validPawn :: GameState
+validPawn = [
+  [ Nothing, Just (Piece ChessBlack P False), Nothing ],
+  [ Just (Piece ChessWhite P False), Nothing, Nothing ],
+  [ Nothing, Nothing, Just (Piece ChessWhite P True) ],
+  [ Nothing, Nothing, Just (Piece ChessBlack P True) ],
+  [ Nothing, Just (Piece ChessWhite P False), Just (Piece ChessWhite P True) ]]
+
+validRook :: GameState
+validRook = [
+  [ Nothing, Just (Piece ChessBlack R False), Nothing ],
+  [ Just (Piece ChessWhite R False), Nothing, Nothing ],
+  [ Nothing, Just (Piece ChessBlack R False), Just (Piece ChessWhite P True) ],
+  [ Nothing, Nothing, Nothing ],
+  [ Nothing, Just (Piece ChessWhite R True), Just (Piece ChessWhite R True) ],
+  [ Just (Piece ChessBlack R False), Nothing, Just (Piece ChessWhite R True) ]]
+
+wB_____ :: Maybe Piece
+wB_____ = Just (Piece ChessWhite B False)
+
+bB_____ :: Maybe Piece
+bB_____ = Just (Piece ChessBlack B False)
+
+validBishop :: GameState
+validBishop = [
+  [ Nothing, wB_____, Nothing, wB_____, wB_____ ],
+  [ Nothing, Nothing, wB_____, Nothing, wB_____ ],
+  [ Nothing, Nothing, bB_____, Nothing, Nothing ],
+  [ bB_____, wB_____, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, wB_____ ]]
+
+wQ_____ :: Maybe Piece
+wQ_____ = Just (Piece ChessWhite Q False)
+
+bQ_____ :: Maybe Piece
+bQ_____ = Just (Piece ChessBlack Q False)
+
+validQueen :: GameState
+validQueen = [
+  [ Nothing, wB_____, Nothing, wB_____, wB_____ ],
+  [ Nothing, Nothing, wB_____, Nothing, wQ_____ ],
+  [ Nothing, Nothing, bQ_____, Nothing, wQ_____ ],
+  [ bB_____, wB_____, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, bQ_____, Nothing, wQ_____ ]]
+
+bN_____ :: Maybe Piece
+bN_____ = Just (Piece ChessBlack N False)
+
+wN_____ :: Maybe Piece
+wN_____ = Just (Piece ChessWhite N False)
+
+validKnight :: GameState
+validKnight = [
+  [ Nothing, wN_____, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, bN_____ ],
+  [ Nothing, Nothing, bN_____, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ]]
+
+bK_____ :: Maybe Piece
+bK_____ = Just (Piece ChessBlack K False)
+
+wK_____ :: Maybe Piece
+wK_____ = Just (Piece ChessWhite K False)
+
+validKing :: GameState
+validKing = [
+  [ Nothing, wN_____, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, wK_____, Nothing, bN_____ ],
+  [ Nothing, Nothing, bK_____, bN_____, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ],
+  [ Nothing, Nothing, Nothing, Nothing, Nothing ]]

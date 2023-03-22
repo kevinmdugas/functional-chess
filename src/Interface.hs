@@ -3,6 +3,7 @@ module Interface (
   reviewMenu,
   display,
   printBoard,
+  winScreen
 ) where
 
 import Board
@@ -41,17 +42,23 @@ reviewMenu =
     "| return to the main menu.      |",
     "+-------------------------------+" ]
 
+winScreen :: ChessColor -> [String]
+winScreen c =
+  [ "+-------------------------------+",
+    "|          " ++ show c ++ " Wins!          |",
+    "+-------------------------------+" ]
+
 display :: Board -> Captures -> ChessColor -> (Pos, Pos) -> IO ()
 display board (whiteCaps, blackCaps) player lastMove = do
   clearScreen
-  putStrLn $ "\t\t" ++ (show player) ++ "'s Turn"
+  putStrLn $ "\t\t" ++ show player ++ "'s Turn"
   infoBar (oppColor player) (if oppColor player == ChessWhite then whiteCaps else blackCaps)
   printBoard board player lastMove
   infoBar player (if player == ChessWhite then whiteCaps else blackCaps)
 
 infoBar :: ChessColor -> [Maybe Piece] -> IO ()
 infoBar player ps = 
-  putStrLn $ "\t   " ++ (show player) ++ "\t    " ++ (printCaptures ps)
+  putStrLn $ "\t   " ++ show player ++ "\t    " ++ printCaptures ps
 
 printCaptures :: [Maybe Piece] -> String
 printCaptures []            = ""
