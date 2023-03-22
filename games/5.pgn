@@ -1,0 +1,31 @@
+[Event "FICS rated standard game"]
+[Site "FICS freechess.org"]
+[Date "2023.01.31"]
+[Round "?"]
+[White "kamenozrout"]
+[Black "Najma"]
+[Result "1-0"]
+[WhiteElo "2171"]
+[BlackElo "1916"]
+[ECO "D46"]
+[TimeControl "900+0"]
+[Time "19:32:00"]
+[PlyCount "75"]
+[FICSGamesDBGameNo "530202704"]
+[WhiteRD "42.9"]
+[BlackRD "24.4"]
+[WhiteClock "0:15:00.000"]
+[BlackClock "0:15:00.000"]
+[WhiteIsComp "Yes"]
+
+1. c2-c4 d7-d5 2. d2-d4 Ng8-f6 3. Nb1-c3 c7-c6 4. e2-e3 e7-e6 5. Ng1-f3
+Bf8-d6 6. Bf1-d3 O-O 7. O-O Nb8-d7 8. e3-e4 d5xe4 9. Nc3xe4 Nf6xe4 10.
+Bd3xe4 Nd7-f6 11. Be4-c2 Qd8-c7 12. c4-c5 Bd6-f4 13. Rf1-e1 Rf8-d8 14.
+Qd1-d3 b7-b6 15. Bc1xf4 Qc7xf4 16. c5xb6 a7xb6 17. g2-g3 Qf4-c7 18. Qd3-e3
+Bc8-b7 19. Nf3-e5 c6-c5 20. d4xc5 b6xc5 21. a2-a3 Rd8-d5 22. Bc2-d3 Ra8-d8
+23. f2-f4 Rd5xd3 24. Qe3-f2 Rd3-d2 25. Re1-e2 Rd2-d1+ 26. Re2-e1 Rd8-d2 27.
+Ra1xd1 Rd2xf2 28. Kg1xf2 h7-h6 29. Re1-e3 c5-c4 30. Kf2-f1 Qc7-c5 31.
+Rd1-d8+ Kg8-h7 32. Re3-e2 c4-c3 33. b2-b4 Qc5-b5 34. Rd8-d3 Bb7-a6 35.
+Kf1-e1 Nf6-g4 36. Re2-c2 Ng4xe5 37. Rd3xc3 Qb5-f1+ 38. Ke1-d2 { Black
+forfeits on time } 1-0
+

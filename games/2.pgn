@@ -1,0 +1,43 @@
+[Event "FICS rated standard game"]
+[Site "FICS freechess.org"]
+[Date "2023.01.31"]
+[Round "?"]
+[White "exeComp"]
+[Black "Notarious"]
+[Result "1/2-1/2"]
+[WhiteElo "2749"]
+[BlackElo "2864"]
+[ECO "D47"]
+[TimeControl "900+0"]
+[Time "20:55:00"]
+[PlyCount "161"]
+[FICSGamesDBGameNo "530202960"]
+[WhiteRD "35.8"]
+[BlackRD "35.6"]
+[BlackIsComp "Yes"]
+[WhiteClock "0:15:00.000"]
+[BlackClock "0:15:00.000"]
+[WhiteIsComp "Yes"]
+
+1. d2-d4 d7-d5 2. c2-c4 e7-e6 3. Nb1-c3 c7-c6 4. e2-e3 Ng8-f6 5. Ng1-f3
+Nb8-d7 6. Bf1-d3 d5xc4 7. Bd3xc4 b7-b5 8. Bc4-d3 Bc8-b7 9. a2-a3 b5-b4 10.
+a3xb4 Bf8xb4 11. O-O c6-c5 12. Nc3-a2 a7-a5 13. Na2xb4 a5xb4 14. Ra1xa8
+Qd8xa8 15. Bc1-d2 O-O 16. Bd3-e2 Qa8-a5 17. Qd1-e1 Rf8-b8 18. d4xc5 Bb7xf3
+19. Be2xf3 Nd7xc5 20. Qe1-b1 Nc5-b3 21. Bd2-e1 Qa5-c5 22. Qb1-d1 Nb3-a5 23.
+Be1-d2 h7-h6 24. Qd1-a4 Na5-c4 25. Rf1-c1 Qc5-d6 26. Bd2-e1 Nc4xb2 27.
+Qa4-b3 Nb2-d3 28. Rc1-d1 Nd3-c5 29. Qb3xb4 Rb8xb4 30. Rd1xd6 Rb4-b1 31.
+Kg1-f1 g7-g5 32. Rd6-d1 Rb1xd1 33. Bf3xd1 Nf6-d5 34. Be1-d2 f7-f5 35.
+Bd2-c1 g5-g4 36. Bc1-b2 Kg8-f7 37. Bb2-d4 Nc5-e4 38. f2-f3 g4xf3 39. g2xf3
+Ne4-g5 40. Kf1-g2 f5-f4 41. e3xf4 Nd5xf4+ 42. Kg2-g3 Nf4-g6 43. Bd4-b2
+Ng5-h7 44. Bb2-c1 Kf7-g7 45. Bd1-b3 e6-e5 46. Kg3-g4 Ng6-e7 47. Bc1-b2
+Nh7-f6+ 48. Kg4-g3 Ne7-f5+ 49. Kg3-f2 Nf5-d4 50. Bb3-a2 Nf6-h5 51. Kf2-e3
+Kg7-g6 52. Ba2-b1+ Kg6-g5 53. Bb2-c3 Nd4-c6 54. Bb1-e4 Nc6-d4 55. Be4-b1
+Nd4-c6 56. Bb1-d3 Nh5-g7 57. Ke3-e4 Ng7-h5 58. Bc3-d2+ Kg5-f6 59. Bd2-c3
+Kf6-g5 60. Bc3-d2+ Kg5-f6 61. Bd2-e1 Nc6-d4 62. Be1-h4+ Kf6-g7 63. Bh4-f2
+Nh5-f6+ 64. Ke4xe5 Nd4xf3+ 65. Ke5-e6 Nf6-g4 66. Bf2-c5 Ng4xh2 67. Bd3-e2
+Kg7-g6 68. Be2xf3 Nh2xf3 69. Bc5-e3 h6-h5 70. Be3-f2 Kg6-g5 71. Ke6-d5
+Kg5-f4 72. Kd5-c4 Nf3-d2+ 73. Kc4-d3 Nd2-e4 74. Bf2-h4 Ne4-c5+ 75. Kd3-e2
+Nc5-e4 76. Ke2-d3 Ne4-c5+ 77. Kd3-d2 Kf4-g4 78. Bh4-e7 Nc5-e4+ 79. Kd2-e3
+Ne4-c3 80. Ke3-d4 h5-h4 81. Be7xh4 { Neither player has mating material }
+1/2-1/2
+

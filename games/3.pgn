@@ -1,0 +1,27 @@
+[Event "FICS rated standard game"]
+[Site "FICS freechess.org"]
+[Date "2023.01.31"]
+[Round "?"]
+[White "GreenArtifex"]
+[Black "pikozrout"]
+[Result "0-1"]
+[WhiteElo "1913"]
+[BlackElo "2288"]
+[ECO "B33"]
+[TimeControl "900+0"]
+[Time "21:02:00"]
+[PlyCount "47"]
+[FICSGamesDBGameNo "530202933"]
+[WhiteRD "34.7"]
+[BlackRD "51.0"]
+[BlackIsComp "Yes"]
+[WhiteClock "0:15:00.000"]
+[BlackClock "0:15:00.000"]
+
+1. e2-e4 c7-c5 2. Ng1-f3 Nb8-c6 3. d2-d4 c5xd4 4. Nf3xd4 Ng8-f6 5. f2-f3
+d7-d5 6. Nd4-b5 d5xe4 7. Qd1xd8+ Ke8xd8 8. Bc1-g5 a7-a6 9. Nb5-c3 Nc6-d4
+10. Nb1-a3 e7-e5 11. O-O-O Bf8xa3 12. b2xa3 e4xf3 13. Nc3-d5 h7-h6 14.
+Bg5-h4 g7-g5 15. Nd5xf6 g5xh4 16. c2-c3 Bc8-f5 17. c3xd4 Ra8-c8+ 18. Kc1-b2
+Rc8-c2+ 19. Kb2-b3 f3xg2 20. d4xe5+ Kd8-e7 21. Nf6-d5+ Ke7-f8 22. Bf1xg2
+Rc2xg2 23. Nd5-e3 Bf5-e6+ 24. Ne3-c4 { White resigns } 0-1
+

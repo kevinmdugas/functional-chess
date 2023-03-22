@@ -1,0 +1,27 @@
+[Event "FICS rated standard game"]
+[Site "FICS freechess.org"]
+[Date "2023.01.31"]
+[Round "?"]
+[White "Aromas"]
+[Black "IFDThor"]
+[Result "0-1"]
+[WhiteElo "1913"]
+[BlackElo "2289"]
+[ECO "A50"]
+[TimeControl "900+0"]
+[Time "18:49:00"]
+[PlyCount "48"]
+[FICSGamesDBGameNo "530202434"]
+[WhiteRD "24.4"]
+[BlackRD "39.8"]
+[BlackIsComp "Yes"]
+[WhiteClock "0:15:00.000"]
+[BlackClock "0:15:00.000"]
+
+1. d2-d4 Ng8-f6 2. c2-c4 d7-d5 3. e2-e3 Bc8-e6 4. c4xd5 Nf6xd5 5. Nb1-c3
+Nb8-c6 6. e3-e4 Nd5xc3 7. b2xc3 Qd8-d7 8. Bf1-b5 a7-a6 9. Bb5-a4 b7-b5 10.
+Ba4-b3 Nc6-a5 11. Bb3xe6 Qd7xe6 12. e4-e5 Qe6-c6 13. Ng1-e2 Qc6xg2 14.
+Rh1-g1 Qg2xh2 15. Qd1-c2 Ra8-d8 16. Bc1-f4 Qh2-h3 17. O-O-O e7-e6 18.
+Rg1-g3 Qh3-f5 19. Qc2xf5 e6xf5 20. Rd1-g1 Na5-c4 21. Kc1-c2 g7-g6 22.
+Kc2-b3 Bf8-e7 23. a2-a4 Nc4-a5+ 24. Kb3-b2 b5xa4 { White resigns } 0-1
+
