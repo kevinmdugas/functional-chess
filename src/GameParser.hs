@@ -28,10 +28,3 @@ filterNonMoves (x:xs)
   | x == ""                         = filterNonMoves xs
   | head x `elem` "KQRBNPabcdefghO" = x : filterNonMoves xs
   | otherwise                       = filterNonMoves xs
-
--- getGameResult :: [String] -> String
--- getGameResult [] = "Error: No result given"
--- getGameResult (x:xs)
---   | x == ""                            = getGameResult xs
---   | x `elem` ["1-0", "1/2-1/2", "0-1"] = x
---   | otherwise                          = getGameResult xs
