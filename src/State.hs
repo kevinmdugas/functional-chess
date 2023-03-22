@@ -90,18 +90,6 @@ makeMove moveSet state = case moveSet of
     let (captP, newState) = apply move (start, end) state
     (captP, newState, (start, end))
 
-makeRevMove :: (Maybe ChessMove, Maybe ChessMove) -> GameState -> Maybe (Maybe Piece, GameState, (Pos, Pos))
-makeRevMove moveSet state = case moveSet of
-  (Just (_, start1, end1), Just (_, start2, end2)) -> do -- Castling
-    let (_, newState1) = apply move (start1, end1) state
-    let (_, newState2) = apply move (start2, end2) newState1
-    return (Nothing, newState2, (start1, end1))
-  (Just (_, start, end), Nothing) -> do -- Valid Input
-    let (newP, newState) = apply move (start, end) state
-    return (newP, newState, (start, end))
-  (_, _) -> do -- Invalid Input
-    Nothing
-
 reverseMove :: (Maybe ChessMove, Maybe ChessMove) -> (Maybe ChessMove, Maybe ChessMove)
 reverseMove (Just (p1, start1, end1), Just (p2, start2, end2)) =
   (Just (p1, end1, start1), Just (p2, end2, start2))

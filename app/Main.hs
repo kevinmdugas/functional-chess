@@ -54,18 +54,14 @@ stepLoop moveList n (caps, state, player, lastMove) = do
     ">"    -> 
       if n + 1 >= length moveList
         then putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
-        else case makeRevMove (moveList !! n) state of
-          Nothing -> 
-            putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
-          Just (newP, newState, newMove) ->
+        else case makeMove (moveList !! n) state of
+          (newP, newState, newMove) ->
             stepLoop moveList (n + 1) (addCapture newP caps player, newState, player, newMove)
     "<"    -> 
       if n - 1 < 0
         then putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
-        else case makeRevMove (reverseMove (moveList !! (n - 1))) state of 
-          Nothing -> 
-            putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
-          Just (_, newState, (x, y)) -> do
+        else case makeMove (reverseMove (moveList !! (n - 1))) state of 
+          (_, newState, (x, y)) -> do
             let (newCaps, p) = removeCapture caps ChessWhite -- one list is sufficient here
             stepLoop moveList (n - 1) (newCaps, placePiece p x newState, player, (x, y))
     "flip" -> stepLoop moveList n (caps, state, oppColor player, lastMove)
