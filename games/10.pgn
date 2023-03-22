@@ -1,0 +1,27 @@
+[Event "FICS rated standard game"]
+[Site "FICS freechess.org"]
+[Date "2023.01.31"]
+[Round "?"]
+[White "Indrayoga"]
+[Black "scalaQueen"]
+[Result "1-0"]
+[WhiteElo "2001"]
+[BlackElo "2051"]
+[ECO "C42"]
+[TimeControl "900+0"]
+[Time "18:23:00"]
+[PlyCount "41"]
+[FICSGamesDBGameNo "530202352"]
+[WhiteRD "43.7"]
+[BlackRD "26.8"]
+[BlackIsComp "Yes"]
+[WhiteClock "0:15:00.000"]
+[BlackClock "0:15:00.000"]
+
+1. e2-e4 e7-e5 2. Ng1-f3 Ng8-f6 3. Nf3xe5 d7-d6 4. Ne5-f3 Nf6xe4 5. Nb1-c3
+Ne4xc3 6. d2xc3 Bc8-g4 7. h2-h3 Bg4xf3 8. Qd1xf3 Qd8-e7+ 9. Bc1-e3 Nb8-c6
+10. Bf1-b5 Ke8-d7 11. O-O-O Qe7-e6 12. Rh1-e1 Qe6xa2 13. Be3-g5 f7-f6 14.
+Qf3-g4+ Kd7-d8 15. Bb5xc6 b7xc6 16. Qg4-e4 Qa2-a1+ 17. Kc1-d2 Kd8-c8 18.
+Qe4xc6 Qa1xd1+ 19. Kd2xd1 Bf8-e7 20. Re1xe7 Kc8-b8 21. Qc6xc7# { Black
+checkmated } 1-0
+

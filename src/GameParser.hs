@@ -16,8 +16,7 @@ parseGameFile filePath = do
 processMoves :: [String] -> [ChessColor] -> [(Maybe ChessMove, Maybe ChessMove)]
 processMoves moves colors = 
   filter (/= (Nothing, Nothing)) $ -- Filter out tuples equal to (Nothing, Nothing)
-  map (\(move, color) -> parseMove move color) $ -- Apply parseMove to each pair
-  zip moves colors
+  zipWith parseMove moves colors   -- Apply parseMove to each pair of elements from moves and colors
 
 turns :: [ChessColor]
 turns = cycle [ChessWhite, ChessBlack]
