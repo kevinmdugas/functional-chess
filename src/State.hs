@@ -5,7 +5,6 @@ module State (
   move,
   addCapture,
   makeMove,
-  makeRevMove,
   reverseMove,
   placePiece,
   removeCapture
