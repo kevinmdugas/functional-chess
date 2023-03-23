@@ -18,14 +18,14 @@ parseMove lanStr clr =
           endPos    = (parseRank rank2, parseFile file2)
           pieceType = P
       (return (Piece { color = clr, ptype = pieceType, moved = False }, startPos, endPos), Nothing)
-    [piece, file1, rank1, capture, file2, rank2]
-      | validPiece piece && 
+    [p, file1, rank1, capture, file2, rank2]
+      | validPiece p && 
         validSquare file1 rank1 && 
         validCapture capture &&
         validSquare file2 rank2 -> do
       let startPos  = (parseRank rank1, parseFile file1)
           endPos    = (parseRank rank2, parseFile file2)
-          pieceTypeM = parsePiece piece
+          pieceTypeM = parsePiece p
       case pieceTypeM of
         Just pieceType -> (return (Piece { color = clr, ptype = pieceType, moved = False }, startPos, endPos), Nothing)
         Nothing        -> (Nothing, Nothing)

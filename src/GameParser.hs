@@ -1,17 +1,12 @@
-module GameParser(parseGameFile) where
-
-import System.IO
-import Data.List (cycle)
+module GameParser(parseGameFile, getGameResult) where
 
 import Board
 import LANParser
 
-parseGameFile :: FilePath -> IO [(Maybe ChessMove, Maybe ChessMove)]
-parseGameFile filePath = do
-  contents <- readFile filePath
+parseGameFile :: String -> [(Maybe ChessMove, Maybe ChessMove)]
+parseGameFile contents = do
   let moveStrings = filterNonMoves $ words contents
-  -- let resultString = getGameResult $ words contents
-  return $ processMoves moveStrings turns
+  processMoves moveStrings turns
 
 processMoves :: [String] -> [ChessColor] -> [(Maybe ChessMove, Maybe ChessMove)]
 processMoves moves colors = 
@@ -28,3 +23,10 @@ filterNonMoves (x:xs)
   | x == ""                         = filterNonMoves xs
   | head x `elem` "KQRBNPabcdefghO" = x : filterNonMoves xs
   | otherwise                       = filterNonMoves xs
+
+getGameResult :: [String] -> String
+getGameResult [] = "Error: No result given"
+getGameResult (x:xs)
+  | x == ""                            = getGameResult xs
+  | x `elem` ["1-0", "1/2-1/2", "0-1"] = x
+  | otherwise                          = getGameResult xs

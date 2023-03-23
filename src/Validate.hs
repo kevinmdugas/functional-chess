@@ -5,7 +5,7 @@ import State
 
 import Data.Maybe
 
-data Direction = H | V | D | DQ1 | DQ2 | DQ3 | DQ4 deriving (Eq)
+data Direction = H | V | DQ1 | DQ2 | DQ3 | DQ4 deriving (Eq)
 type Vector = [Maybe Piece]
 
 -- Validate a standard move, a castle or return false
@@ -31,8 +31,7 @@ validateStandard (expectedStart, start, end) player state = do
         B -> validateDiag start end state
         Q -> validateDiag start end state || validateHorVert start end state
         N -> validateKnight start end
-        K -> validateKing start end
-        _ -> False )
+        K -> validateKing start end )
 
 -- Make sure castling is valid given the specified two moves, the current player,
 -- and gamestate.

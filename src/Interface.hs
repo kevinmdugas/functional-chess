@@ -3,7 +3,8 @@ module Interface (
   reviewMenu,
   display,
   printBoard,
-  winScreen
+  winScreen,
+  reviewResult
 ) where
 
 import Board
@@ -48,6 +49,12 @@ winScreen c =
     "|          " ++ show c ++ " Wins!          |",
     "+-------------------------------+" ]
 
+reviewResult :: String -> String
+reviewResult "1-0"     = "End of Game Reached\t    Result: White Won"
+reviewResult "1/2-1/2" = "End of Game Reached\t    Result: Draw"
+reviewResult "0-1"     = "End of Game Reached\t    Result: Black Won"
+reviewResult _         = "End of Game Reached\t    Result: Error"
+
 display :: Board -> Captures -> ChessColor -> (Pos, Pos) -> IO ()
 display board (whiteCaps, blackCaps) player lastMove = do
   clearScreen
@@ -87,24 +94,24 @@ printRow lastMove (row, num) = do
   putStrLn ("|" ++ show num)
 
 printSquare :: (Pos, Pos) -> Square -> IO ()
-printSquare (start, end) (Square piece tileColor index) = 
-  if index == start || index == end then
-    setSGR [SetColor Background Dull Yellow] >> printPiece piece >> setSGR [Reset]
+printSquare (start, end) (Square p tileColor i) = 
+  if i == start || i == end then
+    setSGR [SetColor Background Dull Yellow] >> printPiece p >> setSGR [Reset]
   else
     case tileColor of
       ChessBlack -> setSGR [SetColor Background Dull Black] 
-        >> printPiece piece >> setSGR [Reset]
+        >> printPiece p >> setSGR [Reset]
       ChessWhite -> setSGR [SetColor Background Dull White] 
-        >> printPiece piece >> setSGR [Reset]
+        >> printPiece p >> setSGR [Reset]
 
 printPiece :: Maybe Piece -> IO ()
 printPiece Nothing = putStr "   "
-printPiece (Just piece) = case color piece of
+printPiece (Just p) = case color p of
   ChessWhite -> 
     setSGR [SetColor Foreground Dull Blue] >> 
-    putStr (" " ++ show (ptype piece) ++ " ") >> 
+    putStr (" " ++ show (ptype p) ++ " ") >> 
     setSGR [Reset]
   ChessBlack -> 
     setSGR [SetColor Foreground Dull Red] >> 
-    putStr (" " ++ show (ptype piece) ++ " ") >> 
+    putStr (" " ++ show (ptype p) ++ " ") >> 
     setSGR [Reset]
