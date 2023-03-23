@@ -5,7 +5,12 @@ import State
 
 import Data.Maybe
 
+-- Direction of a given move, horizontal vertical or diagonal in a particular
+-- quadrant. Quadrants are defined relative to the start piece within the structure
+-- of a 2D list
 data Direction = H | V | DQ1 | DQ2 | DQ3 | DQ4 deriving (Eq)
+
+-- Path between start and endpoint defined by distance and direction
 type Vector = [Maybe Piece]
 
 -- Validate a standard move, a castle or return false
@@ -27,9 +32,9 @@ validateStandard (expectedStart, start, end) player state = do
     validEndPos player actualEnd && 
     ( case ptype expectedStart of
         P -> validatePawn player start end state
-        R -> validateHorVert start end state
+        R -> validateHorVer start end state
         B -> validateDiag start end state
-        Q -> validateDiag start end state || validateHorVert start end state
+        Q -> validateDiag start end state || validateHorVer start end state
         N -> validateKnight start end
         K -> validateKing start end )
 
@@ -89,8 +94,8 @@ kingRadius (sr, sc) = [
 
 -- Make sure end position is either horizontal or vertical to the start
 -- position, create a vector between them, and verify it is clear of all pieces
-validateHorVert :: Pos -> Pos -> GameState -> Bool
-validateHorVert (sr, sc) (er, ec) state 
+validateHorVer :: Pos -> Pos -> GameState -> Bool
+validateHorVer (sr, sc) (er, ec) state 
   | sr == er = isClearPath $ createVector (Just H) (sr, sc) (er, ec) state
   | sc == ec = isClearPath $ createVector (Just V) (sr, sc) (er, ec) state
   | otherwise = False
@@ -117,38 +122,32 @@ isOppPiece :: Maybe Piece -> ChessColor -> Bool
 isOppPiece Nothing _ = False
 isOppPiece (Just p) player = color p == oppColor player
   
--- Given a direction, determine the bounds of a vector between start and end,
--- create list of positions within this vector, get pieces at those positions
--- and determine if they are all nothing (clear path).
+-- Given a direction, create a vector between the start and end position
 createVector :: Maybe Direction -> Pos -> Pos -> GameState -> Maybe Vector
-createVector dir (sr, sc) (er, ec) state = case dir of
-  Just V   -> do
-                let (s, e) = getHVBounds sr er
-                Just [getPiece state (i,sc) | i <- [s..e]]
-  Just H   -> do
-                let (s, e) = getHVBounds sc ec
-                Just [getPiece state (sr,j) | j <- [s..e]]
-  Just DQ1 -> do
-                let path = zip (reverse [er..sr-1]) [sc+1..ec]
-                if inPath (er,ec) path then do
-                  Just [getPiece state (i, j) | (i, j) <- init path]
-                else Nothing
-  Just DQ2 -> do
-                let path = zip (reverse [er..sr-1]) (reverse [ec..sc-1])
-                if inPath (er, ec) path then do
-                  Just [getPiece state (i, j) | (i, j) <- init path]
-                else Nothing
-  Just DQ3 -> do
-                let path = zip [sr+1..er] (reverse [ec..sc-1])
-                if inPath (er, ec) path then do
-                  Just [getPiece state (i, j) | (i, j) <- init path]
-                else Nothing
-  Just DQ4 -> do
-                let path = zip [sr+1..er] [sc+1..ec]
-                if inPath (er, ec) path then do
-                  Just [getPiece state (i, j) | (i, j) <- init path]
-                else Nothing
-  Nothing  -> Nothing
+createVector dir (sr,sc) (er, ec) state = case dir of
+  Nothing -> Nothing
+  Just H  -> Just [getPiece state (sr, j) | j <- getHVBounds sc ec]
+  Just V  -> Just [getPiece state (i, sc) | i <- getHVBounds sr er]
+  _       -> createDiagVector dir (sr,sc) (er, ec) state
+
+-- Given a quadrant, define the path of possible positions along the diagonal between
+-- the start and end. If end position is in the diagonal, return the list of pieces
+-- that separate them. Otherwise return nothing 
+createDiagVector :: Maybe Direction -> Pos -> Pos -> GameState -> Maybe Vector
+createDiagVector dir start end state = do
+  let path = getPath dir start end
+  if inPath end path then
+    Just [getPiece state (i,j) | (i,j) <- init path]
+  else Nothing
+
+-- Generate the list of positions along the diagonal in the specified coordinate
+-- direction. Do not include positions beyond the bounds of the end position
+getPath :: Maybe Direction -> Pos -> Pos -> [Pos]
+getPath dir (sr,sc) (er, ec) = case dir of
+  Just DQ1 -> zip (reverse [er..sr-1]) [sc+1..ec]
+  Just DQ2 -> zip (reverse [er..sr-1]) (reverse [ec..sc-1])
+  Just DQ3 -> zip [sr+1..er] (reverse [ec..sc-1])
+  Just DQ4 -> zip [sr+1..er] [sc+1..ec]
 
 -- Given an end position determine if it is in the path denoted by the 
 -- list of positions.
@@ -160,9 +159,9 @@ inPath end (x:xs) | end == x    = True
 -- Determine the beginning and end positions of a horizontal or vertical
 -- vector depending on where the end position is relative to the start.
 -- (to the left, right, above or below).
-getHVBounds :: Int -> Int -> Pos
-getHVBounds s e | s > e     = (e+1, s-1)
-                | otherwise = (s+1, e-1)
+getHVBounds :: Int -> Int -> [Int]
+getHVBounds s e | s > e     = [e+1..s-1]
+                | otherwise = [s+1..e-1]
 
 -- Iterate through a list of Maybe Pieces and propogate True if only
 -- Nothings are encountered or False if a piece is encountered.
