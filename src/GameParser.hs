@@ -8,6 +8,7 @@ parseGameFile contents = do
   let moveStrings = filterNonMoves $ words contents
   processMoves moveStrings turns
 
+-- Feed the possible move strings to the LAN parser and filter out invalid results
 processMoves :: [String] -> [ChessColor] -> [(Maybe ChessMove, Maybe ChessMove)]
 processMoves moves colors = 
   filter (/= (Nothing, Nothing)) $ -- Filter out tuples equal to (Nothing, Nothing)
@@ -24,6 +25,7 @@ filterNonMoves (x:xs)
   | head x `elem` "KQRBNPabcdefghO" = x : filterNonMoves xs
   | otherwise                       = filterNonMoves xs
 
+-- Get the result string from the file
 getGameResult :: [String] -> String
 getGameResult [] = "Error: No result given"
 getGameResult (x:xs)
