@@ -23,14 +23,15 @@ parseMove lanStr clr =
         validSquare file1 rank1 && 
         validCapture capture &&
         validSquare file2 rank2 -> do
-      let startPos  = (parseRank rank1, parseFile file1)
-          endPos    = (parseRank rank2, parseFile file2)
+      let startPos   = (parseRank rank1, parseFile file1)
+          endPos     = (parseRank rank2, parseFile file2)
           pieceTypeM = parsePiece p
       case pieceTypeM of
         Just pieceType -> (return (Piece { color = clr, ptype = pieceType, moved = False }, startPos, endPos), Nothing)
         Nothing        -> (Nothing, Nothing)
     _ -> (Nothing, Nothing)
 
+-- Get rid of the check or checkmate character as they are not used
 stripCheck :: String -> String
 stripCheck [] = []
 stripCheck (x:xs)
@@ -46,9 +47,11 @@ validSquare file rank = file `elem` "abcdefgh" && rank `elem` "12345678"
 validCapture :: Char -> Bool
 validCapture c = c `elem` "-x"
 
+-- Translate file character to 0..7
 parseFile :: Char -> Int
 parseFile file = ord file - ord 'a'
 
+-- Translate rank character to 0..7
 parseRank :: Char -> Int
 parseRank rank = 7 - (ord rank - ord '1')
 
@@ -62,6 +65,7 @@ parsePiece c = case c of
   'P' -> Just P
   _   -> Nothing
 
+-- Castle kingside
 castleKS :: ChessColor -> (Maybe ChessMove, Maybe ChessMove)
 castleKS clr =
   let kingStartPos = if clr == ChessBlack then (0, 4) else (7, 4)
@@ -72,6 +76,7 @@ castleKS clr =
       rookMove     = (Piece { color = clr, ptype = R, moved = False }, rookStartPos, rookEndPos)
   in (Just kingMove, Just rookMove)
 
+-- Castle queenside
 castleQS :: ChessColor -> (Maybe ChessMove, Maybe ChessMove)
 castleQS clr =
   let kingStartPos = if clr == ChessBlack then (0, 4) else (7, 4)
