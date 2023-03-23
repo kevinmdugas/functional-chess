@@ -30,7 +30,7 @@ data Piece = Piece {
   moved :: Bool
 } deriving Show
 instance Eq Piece where
-  (Piece c1 t1 m1) == (Piece c2 t2 m2) = c1 == c2 && t1 == t2
+  (Piece c1 t1 _) == (Piece c2 t2 _) = c1 == c2 && t1 == t2
 
 type Pos = (Int, Int)
 

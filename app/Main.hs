@@ -1,5 +1,7 @@
 module Main (main) where
   
+import System.Directory (doesFileExist)
+
 import Board
 import State
 import Interface
@@ -44,28 +46,40 @@ review = do
   mapM_ putStrLn reviewMenu
   putStrLn "Enter path to game file: "
   path <- getLine
-  moves <- parseGameFile path
-  stepLoop moves 0 (([], []), startState, ChessWhite, ((8,8),(8,8)))
+  fileExists <- doesFileExist path
+  if not fileExists
+    then putStrLn "Error: file not found" >> review
+    else do
+      contents <- readFile path
+      let moves = parseGameFile contents
+          result = getGameResult $ words contents
+      stepLoop moves 0 (([], []), startState, ChessWhite, ((8,8),(8,8)), result)
 
-stepLoop :: [(Maybe ChessMove, Maybe ChessMove)] -> Int -> (Captures, GameState, ChessColor, (Pos, Pos)) -> IO ()
-stepLoop moveList n (caps, state, player, lastMove) = do
+stepLoop :: [(Maybe ChessMove, Maybe ChessMove)] -> Int 
+  -> (Captures, GameState, ChessColor, (Pos, Pos), String) -> IO ()
+stepLoop moveList n (caps, state, player, lastMove, res) = do
   printBoard (updateBoard emptyBoard state) player lastMove
+  if n == (length moveList) - 1 then putStrLn $ reviewResult res
+  else putStr ""
   putStrLn "Options: >, <, flip, quit"
   choice <- getLine
   case choice of
     ">"    -> 
       if n + 1 >= length moveList
-        then putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
+        then putStrLn "Invalid Move" >> 
+             stepLoop moveList n (caps, state, player, lastMove, res)
         else case makeMove (moveList !! n) state of
           (newP, newState, newMove) ->
-            stepLoop moveList (n + 1) (addCapture newP caps player, newState, player, newMove)
+            stepLoop moveList (n + 1) (addCapture newP caps player, newState, player, newMove, res)
     "<"    -> 
       if n - 1 < 0
-        then putStrLn "Invalid Move" >> stepLoop moveList n (caps, state, player, lastMove)
+        then putStrLn "Invalid Move" >> 
+             stepLoop moveList n (caps, state, player, lastMove, res)
         else case makeMove (reverseMove (moveList !! (n - 1))) state of 
           (_, newState, (x, y)) -> do
             let (newCaps, p) = removeCapture caps ChessWhite -- one list is sufficient here
-            stepLoop moveList (n - 1) (newCaps, placePiece p x newState, player, (x, y))
-    "flip" -> stepLoop moveList n (caps, state, oppColor player, lastMove)
+            stepLoop moveList (n - 1) (newCaps, placePiece p x newState, player, (x, y), res)
+    "flip" -> stepLoop moveList n (caps, state, oppColor player, lastMove, res)
     "quit" -> main
-    _      -> putStrLn "Invalid option" >> stepLoop moveList n (caps, state, player, lastMove)
+    _      -> putStrLn "Invalid option" >> 
+              stepLoop moveList n (caps, state, player, lastMove, res)

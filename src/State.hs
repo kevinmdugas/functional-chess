@@ -45,7 +45,7 @@ getRow state i = state !! i
 move :: ST
 move = S $ \(start, end) state -> (
   case (start, end) of
-    (start, end) | start == end -> (Nothing, state) 
+    (s, e) | s == e -> (Nothing, state) 
 
     ((i,j), (h,k)) | inRange i && inRange j && inRange h && inRange k ->
       (getPiece state end, updateState (start, end) state)
@@ -69,11 +69,12 @@ updateRow ((a,b), (c,d)) state i =  case i of
   _          -> getRow state i
 
 updatePiece :: ([Maybe Piece], [Maybe Piece]) -> Maybe Piece -> [Maybe Piece]
-updatePiece (x,_:ys) piece = x ++ setMoved piece : ys
+updatePiece (x,_:ys) p = x ++ setMoved p : ys
   where
     setMoved :: Maybe Piece -> Maybe Piece
     setMoved Nothing = Nothing
-    setMoved (Just p) = Just (p { moved = True })
+    setMoved (Just p') = Just (p' { moved = True })
+updatePiece _ _ = return Nothing -- Case should never be encountered
 
 addCapture :: Maybe Piece -> Captures -> ChessColor -> Captures
 addCapture p (whiteCaps, blackCaps) ChessWhite = (whiteCaps ++ [p], blackCaps)
@@ -81,13 +82,14 @@ addCapture p (whiteCaps, blackCaps) ChessBlack = (whiteCaps, blackCaps ++ [p])
 
 makeMove :: (Maybe ChessMove, Maybe ChessMove) -> GameState -> (Maybe Piece, GameState, (Pos, Pos))
 makeMove moveSet state = case moveSet of
-  (Just (k, ks, ke), Just (r, rs, re)) -> do -- Castling
+  (Just (_, ks, ke), Just (_, rs, re)) -> do -- Castling
     let (_, newState1) = apply move (ks, ke) state
     let (_, newState2) = apply move (rs, re) newState1 
-    (Nothing, newState1, (ks, ke))
-  (Just (p, start, end), _) -> do
+    (Nothing, newState2, (ks, ke))
+  (Just (_, start, end), _) -> do
     let (captP, newState) = apply move (start, end) state
     (captP, newState, (start, end))
+  (_, _) -> (Nothing, state, ((8,8),(8,8))) -- Case should never be encountered
 
 reverseMove :: (Maybe ChessMove, Maybe ChessMove) -> (Maybe ChessMove, Maybe ChessMove)
 reverseMove (Just (p1, start1, end1), Just (p2, start2, end2)) =
