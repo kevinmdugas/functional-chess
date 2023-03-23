@@ -55,14 +55,15 @@ reviewResult "1/2-1/2" = "End of Game Reached\t    Result: Draw"
 reviewResult "0-1"     = "End of Game Reached\t    Result: Black Won"
 reviewResult _         = "End of Game Reached\t    Result: Error"
 
+-- Display the board between additional info for each player
 display :: Board -> Captures -> ChessColor -> (Pos, Pos) -> IO ()
 display board (whiteCaps, blackCaps) player lastMove = do
-  clearScreen
-  putStrLn $ "\t\t" ++ show player ++ "'s Turn"
+  putStrLn $ "\t" ++ show player ++ "'s Turn"
   infoBar (oppColor player) (if oppColor player == ChessWhite then whiteCaps else blackCaps)
   printBoard board player lastMove
   infoBar player (if player == ChessWhite then whiteCaps else blackCaps)
 
+-- Display player and their pieces captured
 infoBar :: ChessColor -> [Maybe Piece] -> IO ()
 infoBar player ps = 
   putStrLn $ "\t   " ++ show player ++ "\t    " ++ printCaptures ps
@@ -72,6 +73,7 @@ printCaptures []            = ""
 printCaptures ((Just p):ps) = show (ptype p) ++ printCaptures ps
 printCaptures (Nothing:ps)  = printCaptures ps
 
+-- Print the chessboard from the white or black perspective
 printBoard :: Board -> ChessColor -> (Pos, Pos) -> IO ()
 printBoard board player lastMove = do
   if player == ChessWhite then 
