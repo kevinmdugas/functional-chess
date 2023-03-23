@@ -23,15 +23,17 @@ play (caps, state, player, lastMove) = do
   display (updateBoard emptyBoard state) caps player lastMove
   putStrLn "Enter move (using long algebraic notation):"
   moveStr <- getLine
-  let nextPlayer = oppColor player
-  let moveSet = parseMove moveStr player
-  if validate moveSet player state then do
-    let (captP, newState, newMove) = makeMove moveSet state
-    if determineWinner captP then mapM_ putStrLn $ winScreen player
-    else
-      play (addCapture captP caps player, newState, nextPlayer, newMove)
+  if moveStr == "quit" then main
   else do
-    putStrLn "Invalid Move" >> play (caps, state, player, lastMove)
+    let nextPlayer = oppColor player
+    let moveSet = parseMove moveStr player
+    if validate moveSet player state then do
+      let (captP, newState, newMove) = makeMove moveSet state
+      if determineWinner captP then mapM_ putStrLn $ winScreen player
+      else
+        play (addCapture captP caps player, newState, nextPlayer, newMove)
+    else do
+      putStrLn "Invalid Move" >> play (caps, state, player, lastMove)
 
 determineWinner :: Maybe Piece -> Bool
 determineWinner Nothing = False
