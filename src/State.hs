@@ -13,7 +13,7 @@ module State (
 import Board
 
 {--
-  State object is only used after the move denoted by (Pos, Pos) has been
+  State transformer is only used after the move denoted by (Pos, Pos) has been
   proven to be valid. It returns the updated board state after the move
   and the captured piece if there is one.
 --}
@@ -39,47 +39,33 @@ startState = [
 getPiece :: GameState -> Pos -> Maybe Piece
 getPiece state (x, y) =  state !! x !! y
 
-getRow :: GameState -> Int -> [Maybe Piece]
-getRow state i = state !! i
-
+-- Instantiate state transformer that applies a move and returns the piece
+-- previously on the end position (if there was one) and the updated state but
+-- only if the end position is not the same as the start
 move :: ST
 move = S $ \(start, end) state -> (
   case (start, end) of
     (s, e) | s == e -> (Nothing, state) 
 
     ((i,j), (h,k)) | inRange i && inRange j && inRange h && inRange k ->
-      (getPiece state end, updateState (start, end) state)
+      do
+        ( getPiece state end,
+          -- Update the start piece with Nothing, use that altered state to replace the
+          -- end piece with the original start piece
+          placePiece (getPiece state start) end (placePiece Nothing start state) )
 
     (_, _) -> (Nothing, state)
   ) where
     inRange :: Int -> Bool
     inRange x = x >= 0 && x <= 7
 
-updateState :: (Pos, Pos) -> GameState -> GameState
-updateState (start, end) state = do 
-  [ updateRow (start, end) state row | row <- [0..7] ] 
-
-updateRow :: (Pos, Pos) -> GameState -> Int -> [Maybe Piece]
-updateRow ((a,b), (c,d)) state i =  case i of
-  x | x == a && x == c -> do
-    let row' = updatePiece (splitAt b (getRow state a)) Nothing
-    updatePiece (splitAt d row') (getPiece state (a,b))
-  x | x == a -> updatePiece (splitAt b (getRow state a)) Nothing
-  x | x == c -> updatePiece (splitAt d (getRow state c)) (getPiece state (a,b))
-  _          -> getRow state i
-
-updatePiece :: ([Maybe Piece], [Maybe Piece]) -> Maybe Piece -> [Maybe Piece]
-updatePiece (x,_:ys) p = x ++ setMoved p : ys
-  where
-    setMoved :: Maybe Piece -> Maybe Piece
-    setMoved Nothing = Nothing
-    setMoved (Just p') = Just (p' { moved = True })
-updatePiece _ _ = return Nothing -- Case should never be encountered
-
+-- Add captured piece to the lists of captures for each player
 addCapture :: Maybe Piece -> Captures -> ChessColor -> Captures
 addCapture p (whiteCaps, blackCaps) ChessWhite = (whiteCaps ++ [p], blackCaps)
 addCapture p (whiteCaps, blackCaps) ChessBlack = (whiteCaps, blackCaps ++ [p])
 
+-- Given a now validated either standard or castle move, apply move to state transformer
+-- and return any captured piece, the new state, and the move positions for displaying
 makeMove :: (Maybe ChessMove, Maybe ChessMove) -> GameState -> (Maybe Piece, GameState, (Pos, Pos))
 makeMove moveSet state = case moveSet of
   (Just (_, ks, ke), Just (_, rs, re)) -> do -- Castling
@@ -91,6 +77,8 @@ makeMove moveSet state = case moveSet of
     (captP, newState, (start, end))
   (_, _) -> (Nothing, state, ((8,8),(8,8))) -- Case should never be encountered
 
+-- Return the reverse of the current move which will be used to revert the current
+-- state to the previous state
 reverseMove :: (Maybe ChessMove, Maybe ChessMove) -> (Maybe ChessMove, Maybe ChessMove)
 reverseMove (Just (p1, start1, end1), Just (p2, start2, end2)) =
   (Just (p1, end1, start1), Just (p2, end2, start2))
@@ -98,6 +86,7 @@ reverseMove (Just (p, start, end), Nothing) =
   (Just (p, end, start), Nothing)
 reverseMove (_, _) = (Nothing, Nothing)
 
+-- Given a piece, position and state, place piece at position within state
 placePiece :: Maybe Piece -> Pos -> GameState -> GameState
 placePiece p (i, j) state = 
   take i state ++ [setPiece j (state !! i)] ++ drop (i + 1) state
@@ -105,6 +94,7 @@ placePiece p (i, j) state =
     setPiece :: Int -> [Maybe Piece] -> [Maybe Piece]
     setPiece j' state' = take j' state' ++ [p] ++ drop (j' + 1) state'
 
+-- Remove a captured piece from the list of captured pieces for a particular player
 removeCapture :: Captures -> ChessColor -> (Captures, Maybe Piece)
 removeCapture (whiteCaps, blackCaps) clr = case clr of
   ChessWhite -> case reverse whiteCaps of
