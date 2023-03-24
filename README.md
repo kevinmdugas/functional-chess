@@ -67,14 +67,6 @@ games folder used for testing.
 
 ## Design Overview
 
-  - How to run tests
-
-- Description of each module
-
-  - description of module role in the overall design
-  - prominent functions and datatypes
-  - Description test cases if any
-
 ### Main
 
 The `Main` module is the root module and is responsible for calling all other child modules as well
