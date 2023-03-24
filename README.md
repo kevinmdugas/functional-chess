@@ -17,11 +17,6 @@ string that
 denotes the move they wish to make. The game ends when either king is captured (you
 must explicitly type the LAN command to capture a king).
 
-## Table of Contents
-
-* [Long Algebraic Notation(LAN)](#long-algebraic-notaion-lan)
-  * [LAN Examples](#lan-examples)
-
 ## Long Algebraic Notaion (LAN)
 
 Our program recognizes chess moves given in a specific variation of long algebraic notation (LAN). An 
