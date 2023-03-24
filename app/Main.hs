@@ -49,17 +49,17 @@ review = do
   fileExists <- doesFileExist path
   if not fileExists
     then putStrLn "Error: file not found" >> review
-    else do
-      contents <- readFile path
-      let moves = parseGameFile contents
-          result = getGameResult $ words contents
-      stepLoop moves 0 (([], []), startState, ChessWhite, ((8,8),(8,8)), result)
+  else do
+    contents <- readFile path
+    let moves = parseGameFile contents
+        result = getGameResult $ words contents
+    stepLoop moves 0 (([], []), startState, ChessWhite, ((8,8),(8,8)), result)
 
 stepLoop :: [(Maybe ChessMove, Maybe ChessMove)] -> Int 
   -> (Captures, GameState, ChessColor, (Pos, Pos), String) -> IO ()
 stepLoop moveList n (caps, state, player, lastMove, res) = do
   printBoard (updateBoard emptyBoard state) player lastMove
-  if n == (length moveList) - 1 then putStrLn $ reviewResult res
+  if n == length moveList - 1 then putStrLn $ reviewResult res
   else putStr ""
   putStrLn "Options: >, <, flip, quit"
   choice <- getLine
