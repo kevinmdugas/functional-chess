@@ -19,6 +19,7 @@ import Board
 --}
 newtype ST = S { apply :: (Pos, Pos) -> GameState -> (Maybe Piece, GameState) }
 
+-- Initial board position
 startState :: GameState
 startState = [
   [ Just (Piece ChessBlack R False), Just (Piece ChessBlack N False), 
@@ -36,6 +37,7 @@ startState = [
     Just (Piece ChessWhite K False), Just (Piece ChessWhite B False), 
     Just (Piece ChessWhite N False), Just (Piece ChessWhite R False) ]]
 
+-- Return piece at the given position
 getPiece :: GameState -> Pos -> Maybe Piece
 getPiece state (x, y) =  state !! x !! y
 

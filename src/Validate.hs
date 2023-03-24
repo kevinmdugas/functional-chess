@@ -148,6 +148,7 @@ getPath dir (sr,sc) (er, ec) = case dir of
   Just DQ2 -> zip (reverse [er..sr-1]) (reverse [ec..sc-1])
   Just DQ3 -> zip [sr+1..er] (reverse [ec..sc-1])
   Just DQ4 -> zip [sr+1..er] [sc+1..ec]
+  _        -> [] 
 
 -- Given an end position determine if it is in the path denoted by the 
 -- list of positions.
